@@ -42,341 +42,439 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
 
-    <!-- 상단 네비게이션 바 -->
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 gap-3">
-                <!-- 로고 & 브랜드 -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
+    <!-- ========================================================= -->
+    <!-- 0. 로그인 / 신규 선수 가입 화면 (AUTH VIEW) -->
+    <!-- ========================================================= -->
+    <section id="view-auth" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden fade-in">
+            <!-- 상단 브랜드 헤더 -->
+            <div class="px-6 pt-7 pb-5 text-center bg-slate-50 border-b border-slate-100">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">COOPER <span class="text-blue-600">PRO</span></h1>
+                <p class="text-xs text-slate-500 mt-1">팀 쿠퍼 테스트 기록 측정 · 심박 평가 플랫폼</p>
+            </div>
+
+            <!-- 로그인 탭 전환 -->
+            <div class="p-6 space-y-5">
+                <div class="grid grid-cols-3 p-1 rounded-xl bg-slate-100 border border-slate-200/80">
+                    <button type="button" id="auth-tab-player" onclick="switchAuthTab('player')" class="py-2 rounded-lg text-xs font-bold transition">선수 로그인</button>
+                    <button type="button" id="auth-tab-manager" onclick="switchAuthTab('manager')" class="py-2 rounded-lg text-xs font-bold transition">팀 관리자</button>
+                    <button type="button" id="auth-tab-signup" onclick="switchAuthTab('signup')" class="py-2 rounded-lg text-xs font-bold transition">선수 가입</button>
+                </div>
+
+                <!-- 탭 1: 선수 로그인 폼 -->
+                <form id="form-login-player" onsubmit="handlePlayerLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">선수 이름</label>
+                        <input type="text" id="login-player-name" required placeholder="이름을 입력하세요 (예: 김민재)" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
+                        <!-- 빠른 시연용 선수 선택 칩 -->
+                        <div class="mt-2">
+                            <p class="text-[11px] text-slate-400 mb-1.5">빠른 선택 (시연용):</p>
+                            <div id="quick-login-chips" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">개인 비밀번호 (PIN 4자리)</label>
+                        <input type="password" id="login-player-pin" inputmode="numeric" maxlength="6" required placeholder="초기 비밀번호: 1234" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-bold shadow-sm hover:bg-blue-700 active:scale-[0.98] transition">
+                        선수 계정으로 로그인
+                    </button>
+                    <p class="text-[11px] text-center text-slate-400">기존 샘플 선수 초기 PIN은 <strong class="text-slate-600">1234</strong> 입니다.</p>
+                </form>
+
+                <!-- 탭 2: 팀 관리자 로그인 폼 -->
+                <form id="form-login-manager" onsubmit="handleManagerLogin(event)" class="hidden space-y-4">
+                    <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-800 leading-relaxed">
+                        <strong>관리자 전용 모드:</strong> 구단 전체 선수의 순위, 누적 평균, 성장/퇴화 추이 및 최대심박 사용률(%HRmax)을 열람하고 관리합니다.
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">관리자 비밀번호</label>
+                        <input type="password" id="login-manager-pin" inputmode="numeric" required placeholder="초기 비밀번호: 0000" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 text-white text-sm font-bold shadow-sm hover:bg-slate-800 active:scale-[0.98] transition">
+                        팀 관리자로 로그인
+                    </button>
+                    <p class="text-[11px] text-center text-slate-400">관리자 초기 비밀번호는 <strong class="text-slate-600">0000</strong> 입니다.</p>
+                </form>
+
+                <!-- 탭 3: 신규 선수 회원가입 폼 -->
+                <form id="form-signup-player" onsubmit="handlePlayerSignup(event)" class="hidden space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">선수 이름 *</label>
+                        <input type="text" id="signup-name" required placeholder="예: 홍길동" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">포지션</label>
+                            <select id="signup-position" class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 bg-white">
+                                <option value="FW">FW (공격수)</option>
+                                <option value="MF" selected>MF (미드필더)</option>
+                                <option value="DF">DF (수비수)</option>
+                                <option value="GK">GK (골키퍼)</option>
+                            </select>
                         </div>
                         <div>
-                            <h1 class="text-lg font-extrabold tracking-tight text-slate-900 leading-none">COOPER <span class="text-blue-600">PRO</span></h1>
-                            <p class="text-[11px] font-medium text-slate-500 mt-0.5">누적 성장 추적 · Apple/Galaxy 워치 호환</p>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">만 나이 *</label>
+                            <input type="number" id="signup-age" required min="10" max="70" value="22" class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200">
                         </div>
                     </div>
-
-                    <!-- 모바일용 액션 버튼 -->
-                    <div class="flex sm:hidden items-center gap-1.5">
-                        <button onclick="openWatchGuideModal()" class="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition" title="워치 연동 방법">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </button>
-                        <button onclick="openRecordModal()" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            기록 추가
-                        </button>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">사용할 비밀번호 (PIN 4자리) *</label>
+                        <input type="password" id="signup-pin" inputmode="numeric" maxlength="6" required placeholder="숫자 4자리 (예: 1234)" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
                     </div>
-                </div>
-
-                <!-- 역할 전환 스위치 & 데스크톱 액션 -->
-                <div class="flex items-center justify-between sm:justify-end gap-2.5">
-                    <div class="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200/80 w-full sm:w-auto">
-                        <button id="btn-role-manager" onclick="switchRole('manager')" class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            팀 관리자
-                        </button>
-                        <button id="btn-role-player" onclick="switchRole('player')" class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            선수 개인
-                        </button>
-                    </div>
-
-                    <button onclick="openWatchGuideModal()" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition">
-                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        워치 연동 가이드
+                    <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 text-white text-sm font-bold shadow-sm hover:bg-emerald-700 active:scale-[0.98] transition">
+                        가입 완료하고 시작하기
                     </button>
-
-                    <button onclick="openRecordModal()" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-sm hover:bg-blue-700 active:scale-[0.98] transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        시계 기록 추가
-                    </button>
-                </div>
+                </form>
             </div>
         </div>
-    </header>
+    </section>
 
-    <!-- 메인 컨텐츠 영역 -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- ========================================================= -->
+    <!-- 앱 본문 래퍼 (로그인 후 표시) -->
+    <!-- ========================================================= -->
+    <div id="app-shell" class="hidden min-h-screen flex flex-col">
 
-        <!-- ========================================================= -->
-        <!-- 1. 팀 관리자 대시보드 뷰 (MANAGER VIEW) -->
-        <!-- ========================================================= -->
-        <section id="view-manager" class="space-y-6 fade-in">
-            <!-- 헤더 안내 & 기준 전환 -->
-            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-                <div>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                        관리자 모드 · 누적 체력 추적 & 평균 평가
-                    </span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">구단 전체 성장 추적 & 심박 평가</h2>
-                    <p class="text-sm text-slate-500 mt-1">누적된 쿠퍼 테스트 기록의 평균값과 직전 측정 대비 성장·퇴화 추이를 분석합니다. (최대심박 = 220 - 나이)</p>
-                </div>
+        <!-- 상단 네비게이션 바 -->
+        <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 gap-3">
+                    <!-- 로고 & 브랜드 -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-lg font-extrabold tracking-tight text-slate-900 leading-none">COOPER <span class="text-blue-600">PRO</span></h1>
+                                <p class="text-[11px] font-medium text-slate-500 mt-0.5" id="header-subtitle">누적 성장 추적 · Apple/Galaxy 워치 호환</p>
+                            </div>
+                        </div>
 
-                <div class="flex flex-wrap items-center gap-2">
-                    <!-- 최근 기록 vs 누적 평균 기준 전환 토글 -->
-                    <div class="inline-flex p-1 rounded-xl bg-white border border-slate-200 shadow-sm">
-                        <button id="btn-metric-latest" onclick="setMetricMode('latest')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">최근 측정 기준</button>
-                        <button id="btn-metric-average" onclick="setMetricMode('average')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">누적 평균 기준</button>
+                        <!-- 모바일용 액션 버튼 -->
+                        <div class="flex sm:hidden items-center gap-1.5">
+                            <button onclick="openRecordModal()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700 transition">
+                                + 기록
+                            </button>
+                            <button onclick="handleLogout()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-rose-50 hover:text-rose-600 transition">
+                                로그아웃
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- 팀 전체 원클릭 자동 동기화 버튼 -->
-                    <button id="btn-team-auto-sync" onclick="syncTeamAllWatches()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 text-white text-xs sm:text-sm font-bold hover:from-orange-600 hover:to-rose-600 active:scale-[0.98] transition shadow-sm">
-                        <svg id="team-sync-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <span id="team-sync-label">팀 기록 원클릭 동기화</span>
-                    </button>
+                    <!-- 우측 컨트롤 영역 (권한에 따라 다르게 표시) -->
+                    <div class="flex items-center justify-between sm:justify-end gap-2">
+                        <!-- 관리자 전용: 팀 관리자 / 선수 미리보기 전환 스위치 -->
+                        <div id="manager-role-switcher" class="hidden inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200/80 w-full sm:w-auto">
+                            <button id="btn-role-manager" onclick="switchRole('manager')" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5">
+                                팀 관리자
+                            </button>
+                            <button id="btn-role-player" onclick="switchRole('player')" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5">
+                                선수 화면 보기
+                            </button>
+                        </div>
 
-                    <button onclick="exportCSV()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
-                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        CSV 내보내기
-                    </button>
-                    <button onclick="resetDemoData()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium hover:bg-slate-50 transition shadow-sm" title="샘플 누적 데이터로 초기화">
-                        초기화
-                    </button>
+                        <!-- 선수 전용: 현재 로그인 배지 -->
+                        <div id="player-auth-badge" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-blue-800">
+                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                            <span id="header-player-name-label">선수님</span>
+                        </div>
+
+                        <button onclick="openWatchGuideModal()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-200 transition">
+                            워치 가이드
+                        </button>
+
+                        <button onclick="openRecordModal()" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs sm:text-sm font-semibold shadow-sm hover:bg-blue-700 active:scale-[0.98] transition">
+                            + 시계 기록 추가
+                        </button>
+
+                        <button onclick="handleLogout()" class="hidden sm:inline-flex items-center gap-1 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs sm:text-sm font-semibold hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition">
+                            로그아웃
+                        </button>
+                    </div>
                 </div>
             </div>
+        </header>
 
-            <!-- 팀 KPI 요약 카드 4종 -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4" id="manager-kpi-cards"></div>
+        <!-- 메인 컨텐츠 영역 -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-            <!-- 팀 차트 섹션 -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <!-- 팀 전체 거리(최근 vs 누적평균) & %HRmax 비교 차트 -->
-                <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
+            <!-- ========================================================= -->
+            <!-- 1. 팀 관리자 대시보드 뷰 (MANAGER VIEW) -->
+            <!-- ========================================================= -->
+            <section id="view-manager" class="hidden space-y-6 fade-in">
+                <!-- 헤더 안내 & 기준 전환 -->
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                            관리자 모드 · 누적 체력 추적 & 평균 평가
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">구단 전체 성장 추적 & 심박 평가</h2>
+                        <p class="text-sm text-slate-500 mt-1">누적된 쿠퍼 테스트 기록의 평균값과 직전 측정 대비 성장·퇴화 추이를 분석합니다. (최대심박 = 220 - 나이)</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="inline-flex p-1 rounded-xl bg-white border border-slate-200 shadow-sm">
+                            <button id="btn-metric-latest" onclick="setMetricMode('latest')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">최근 측정 기준</button>
+                            <button id="btn-metric-average" onclick="setMetricMode('average')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">누적 평균 기준</button>
+                        </div>
+
+                        <button id="btn-team-auto-sync" onclick="syncTeamAllWatches()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 text-white text-xs sm:text-sm font-bold hover:from-orange-600 hover:to-rose-600 active:scale-[0.98] transition shadow-sm">
+                            <svg id="team-sync-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <span id="team-sync-label">팀 기록 원클릭 동기화</span>
+                        </button>
+
+                        <button onclick="exportCSV()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
+                            CSV 내보내기
+                        </button>
+                        <button onclick="resetDemoData()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium hover:bg-slate-50 transition shadow-sm" title="샘플 누적 데이터로 초기화">
+                            초기화
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 팀 KPI 요약 카드 4종 -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4" id="manager-kpi-cards"></div>
+
+                <!-- 팀 차트 섹션 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900">선수별 최근 거리 vs 누적 평균 & 심박 사용률</h3>
+                                <p class="text-xs text-slate-500">파란 막대: 최근 거리 · 회색 막대: 누적 평균 거리 · 붉은 선: 평균 %HRmax</p>
+                            </div>
+                            <span class="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 self-start">상위 10명 기준</span>
+                        </div>
+                        <div class="relative h-64 w-full">
+                            <canvas id="teamOverviewChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 mb-1">구단 성장·퇴화 & 심박 강도</h3>
+                            <p class="text-xs text-slate-500 mb-4">직전 측정 대비 컨디션 변화 및 심박 부하(%HRmax)</p>
+                            <div class="grid grid-cols-3 gap-2 mb-4" id="team-trend-summary"></div>
+                            <div id="hr-zone-distribution" class="space-y-2.5"></div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 leading-relaxed">
+                            <strong class="text-slate-700">추적 팁:</strong> 거리가 늘고 <span class="text-emerald-600 font-semibold">%HRmax가 유지/감소</span>하면 진정한 심폐 성장입니다. 거리가 줄고 심박이 높다면 피로 누적을 점검하세요.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 구단 전체 선수 순위표 (Leaderboard) -->
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+                    <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900">전체 선수 누적 기록 및 순위표</h3>
+                            <span id="total-players-badge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">0명</span>
+                            <button type="button" onclick="openRecordModal(null, 'new')" class="ml-1 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 active:scale-[0.98] transition shadow-sm">
+                                + 선수 추가
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="relative flex-1 sm:w-44">
+                                <input type="text" id="search-input" oninput="renderManagerDashboard()" placeholder="선수 이름 검색..." class="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
+                                <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                            <select id="position-filter" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
+                                <option value="ALL">전체 포지션</option>
+                                <option value="FW">FW</option>
+                                <option value="MF">MF</option>
+                                <option value="DF">DF</option>
+                                <option value="GK">GK</option>
+                            </select>
+                            <select id="trend-filter" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
+                                <option value="ALL">전체 추이</option>
+                                <option value="improving">성장 선수 (▲)</option>
+                                <option value="declining">퇴화 주의 (▼)</option>
+                            </select>
+                            <select id="sort-select" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
+                                <option value="rank">순위 순</option>
+                                <option value="deltaDesc">성장폭 큰 순</option>
+                                <option value="deltaAsc">퇴화폭 큰 순</option>
+                                <option value="hrPercentDesc">%HRmax 높은 순</option>
+                                <option value="hrPercentAsc">%HRmax 낮은 순</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="py-3 px-4 text-center w-12">순위</th>
+                                    <th class="py-3 px-4">선수 (측정횟수)</th>
+                                    <th class="py-3 px-4 text-right">최근 기록</th>
+                                    <th class="py-3 px-4 text-right">누적 평균</th>
+                                    <th class="py-3 px-4 text-center">성장/퇴화 (직전 대비)</th>
+                                    <th class="py-3 px-4 text-right">최대심박 / 평균심박</th>
+                                    <th class="py-3 px-4 min-w-[165px]">심박 사용률 (%HRmax)</th>
+                                    <th class="py-3 px-4 text-center">누적 분석</th>
+                                </tr>
+                            </thead>
+                            <tbody id="manager-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- 2. 선수 개인 화면 뷰 (PLAYER VIEW) -->
+            <!-- ========================================================= -->
+            <section id="view-player" class="hidden space-y-6 fade-in max-w-4xl mx-auto">
+                <!-- 선수 프로필 바 (관리자 미리보기 시에만 다른 선수 선택 가능, 선수 본인은 고정) -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm" id="player-avatar">KM</div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500" id="player-bar-subtitle">로그인된 선수 계정</p>
+                            <!-- 선수 본인 로그인 시 고정 텍스트 -->
+                            <div id="player-fixed-title" class="text-base font-extrabold text-slate-900"></div>
+                            <!-- 관리자 미리보기 시 선수 선택 드롭다운 -->
+                            <select id="player-selector" onchange="renderPlayerView()" class="hidden text-base font-bold text-slate-900 bg-transparent focus:outline-none cursor-pointer pr-2"></select>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                        <span id="player-record-count-badge" class="font-bold text-blue-600">누적 0회</span>
+                        <span>·</span>
+                        <span>최근 측정: <strong id="player-test-date" class="text-slate-700">-</strong></span>
+                    </div>
+                </div>
+
+                <!-- 선수 개인용 원클릭 워치 자동 동기화 배너 카드 -->
+                <div id="player-watch-sync-card" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"></div>
+
+                <!-- 선수 핵심 요약 히어로 카드 -->
+                <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-blue-500/20 blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-blue-200" id="player-grade-badge">등급</span>
+                                <span id="player-trend-hero-badge" class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold">추이</span>
+                            </div>
+                            <div class="flex items-baseline gap-3">
+                                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight flex items-baseline gap-1.5">
+                                    <span id="player-distance">0</span>
+                                    <span class="text-lg font-medium text-blue-200">m</span>
+                                </h2>
+                                <span class="text-xs sm:text-sm text-slate-300 font-medium">
+                                    (누적 평균 <strong id="player-avg-dist-hero" class="text-white">0m</strong>)
+                                </span>
+                            </div>
+                            <p class="text-sm text-slate-300 mt-2" id="player-feedback-text"></p>
+                        </div>
+
+                        <!-- 내 팀 순위 & 개인 최고(PR) -->
+                        <div class="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:px-6 shrink-0">
+                            <div class="text-center">
+                                <p class="text-xs font-medium text-blue-200 uppercase">팀 내 순위</p>
+                                <div class="flex items-baseline justify-center gap-1 mt-1">
+                                    <span class="text-3xl sm:text-4xl font-black text-white" id="player-rank">-</span>
+                                    <span class="text-xs sm:text-sm font-semibold text-slate-300" id="player-total-count">/ 0명</span>
+                                </div>
+                            </div>
+                            <div class="h-10 w-px bg-white/20"></div>
+                            <div class="text-center">
+                                <p class="text-xs font-medium text-blue-200 uppercase">개인 최고(PR)</p>
+                                <div class="flex items-baseline justify-center gap-1 mt-1">
+                                    <span class="text-xl sm:text-2xl font-extrabold text-amber-300" id="player-best-dist">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 선수 개인 누적 평균 & 최근 지표 4종 -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                        <p class="text-xs font-semibold text-slate-500">누적 평균 거리</p>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span class="text-xl sm:text-2xl font-extrabold text-blue-600" id="player-stat-avg-dist">-</span>
+                            <span class="text-xs text-slate-500">m</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1" id="player-stat-avg-vo2">평균 VO2 -</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                        <p class="text-xs font-semibold text-slate-500">누적 평균 %HRmax</p>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span class="text-xl sm:text-2xl font-extrabold text-rose-600" id="player-stat-avg-hrpct">-</span>
+                            <span class="text-xs text-slate-500">%</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">최대심박 <span id="player-max-hr" class="font-semibold text-slate-600">-</span> bpm</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                        <p class="text-xs font-semibold text-slate-500">최근 평균 심박</p>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span class="text-xl sm:text-2xl font-extrabold text-slate-900" id="player-avg-hr">-</span>
+                            <span class="text-xs text-slate-500">bpm</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">최고 <span id="player-peak-hr" class="font-semibold text-slate-600">-</span> bpm</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                        <p class="text-xs font-semibold text-slate-500">최근 1km 페이스</p>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span class="text-xl sm:text-2xl font-extrabold text-emerald-600" id="player-pace">-</span>
+                            <span class="text-xs text-slate-500">/km</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1" id="player-last-device">워치 GPS 기록</p>
+                    </div>
+                </div>
+
+                <!-- 나의 성장/퇴화 추이 차트 (누적 기록) -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                         <div>
-                            <h3 class="text-base font-bold text-slate-900">선수별 최근 거리 vs 누적 평균 & 심박 사용률</h3>
-                            <p class="text-xs text-slate-500">파란 막대: 최근 거리 · 회색 막대: 누적 평균 거리 · 붉은 선: 평균 %HRmax</p>
+                            <h3 class="text-base font-bold text-slate-900">나의 성장·퇴화 추이 (누적 기록)</h3>
+                            <p class="text-xs text-slate-500">회차별 12분 거리(m)와 심박 사용률(%HRmax) 변화를 확인하세요</p>
                         </div>
-                        <span class="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 self-start">상위 10명 기준</span>
+                        <button onclick="openRecordModal(selectedPlayerId)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition self-start">
+                            + 내 새 기록 추가
+                        </button>
                     </div>
-                    <div class="relative h-64 w-full">
-                        <canvas id="teamOverviewChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- 팀 성장/퇴화 현황 & 심박 존 분포 -->
-                <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-900 mb-1">구단 성장·퇴화 & 심박 강도</h3>
-                        <p class="text-xs text-slate-500 mb-4">직전 측정 대비 컨디션 변화 및 심박 부하(%HRmax)</p>
-
-                        <!-- 성장 / 유지 / 퇴화 요약 칩 -->
-                        <div class="grid grid-cols-3 gap-2 mb-4" id="team-trend-summary"></div>
-
-                        <div id="hr-zone-distribution" class="space-y-2.5"></div>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 leading-relaxed">
-                        <strong class="text-slate-700">추적 팁:</strong> 거리가 늘고 <span class="text-emerald-600 font-semibold">%HRmax가 유지/감소</span>하면 진정한 심폐 성장입니다. 거리가 줄고 심박이 높다면 피로 누적(오버트레이닝)을 점검하세요.
-                    </div>
-                </div>
-            </div>
-
-            <!-- 구단 전체 선수 순위표 (Leaderboard) -->
-            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-                <!-- 필터 & 검색 바 -->
-                <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-base sm:text-lg font-bold text-slate-900">전체 선수 누적 기록 및 순위표</h3>
-                        <span id="total-players-badge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">0명</span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <div class="relative flex-1 sm:w-44">
-                            <input type="text" id="search-input" oninput="renderManagerDashboard()" placeholder="선수 이름 검색..." class="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500">
-                            <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        </div>
-                        <select id="position-filter" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
-                            <option value="ALL">전체 포지션</option>
-                            <option value="FW">FW</option>
-                            <option value="MF">MF</option>
-                            <option value="DF">DF</option>
-                            <option value="GK">GK</option>
-                        </select>
-                        <select id="trend-filter" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
-                            <option value="ALL">전체 추이</option>
-                            <option value="improving">성장 선수 (▲)</option>
-                            <option value="declining">퇴화 주의 (▼)</option>
-                        </select>
-                        <select id="sort-select" onchange="renderManagerDashboard()" class="px-2.5 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-700">
-                            <option value="rank">순위 순</option>
-                            <option value="deltaDesc">성장폭 큰 순</option>
-                            <option value="deltaAsc">퇴화폭 큰 순</option>
-                            <option value="hrPercentDesc">%HRmax 높은 순</option>
-                            <option value="hrPercentAsc">%HRmax 낮은 순</option>
-                        </select>
+                    <div class="relative h-60 w-full">
+                        <canvas id="playerProgressChart"></canvas>
                     </div>
                 </div>
 
-                <!-- 반응형 테이블 -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                <th class="py-3 px-4 text-center w-12">순위</th>
-                                <th class="py-3 px-4">선수 (측정횟수)</th>
-                                <th class="py-3 px-4 text-right">최근 기록</th>
-                                <th class="py-3 px-4 text-right">누적 평균</th>
-                                <th class="py-3 px-4 text-center">성장/퇴화 (직전 대비)</th>
-                                <th class="py-3 px-4 text-right">최대심박 / 평균심박</th>
-                                <th class="py-3 px-4 min-w-[165px]">심박 사용률 (%HRmax)</th>
-                                <th class="py-3 px-4 text-center">누적 분석</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manager-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- ========================================================= -->
-        <!-- 2. 선수 개인 화면 뷰 (PLAYER VIEW) -->
-        <!-- ========================================================= -->
-        <section id="view-player" class="hidden space-y-6 fade-in max-w-4xl mx-auto">
-            <!-- 선수 선택 바 -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm" id="player-avatar">KM</div>
-                    <div>
-                        <p class="text-xs font-semibold text-slate-500">현재 로그인된 선수 계정</p>
-                        <select id="player-selector" onchange="renderPlayerView()" class="text-base font-bold text-slate-900 bg-transparent focus:outline-none cursor-pointer pr-2"></select>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                    <span id="player-record-count-badge" class="font-bold text-blue-600">누적 0회</span>
-                    <span>·</span>
-                    <span>최근 측정: <strong id="player-test-date" class="text-slate-700">-</strong></span>
-                </div>
-            </div>
-
-            <!-- 선수 개인용 원클릭 워치 자동 동기화 배너 카드 -->
-            <div id="player-watch-sync-card" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <!-- JS에서 연동 상태(연결됨 / 미연결)에 따라 동적 렌더링 -->
-            </div>
-
-            <!-- 선수 핵심 요약 히어로 카드 -->
-            <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
-                <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-blue-500/20 blur-2xl pointer-events-none"></div>
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <div class="flex flex-wrap items-center gap-2 mb-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-blue-200" id="player-grade-badge">등급</span>
-                            <span id="player-trend-hero-badge" class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold">추이</span>
-                        </div>
-                        <div class="flex items-baseline gap-3">
-                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight flex items-baseline gap-1.5">
-                                <span id="player-distance">0</span>
-                                <span class="text-lg font-medium text-blue-200">m</span>
-                            </h2>
-                            <span class="text-xs sm:text-sm text-slate-300 font-medium">
-                                (누적 평균 <strong id="player-avg-dist-hero" class="text-white">0m</strong>)
-                            </span>
-                        </div>
-                        <p class="text-sm text-slate-300 mt-2" id="player-feedback-text"></p>
-                    </div>
-
-                    <!-- 내 팀 순위 & 개인 최고(PR) -->
-                    <div class="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:px-6 shrink-0">
-                        <div class="text-center">
-                            <p class="text-xs font-medium text-blue-200 uppercase">팀 내 순위</p>
-                            <div class="flex items-baseline justify-center gap-1 mt-1">
-                                <span class="text-3xl sm:text-4xl font-black text-white" id="player-rank">-</span>
-                                <span class="text-xs sm:text-sm font-semibold text-slate-300" id="player-total-count">/ 0명</span>
-                            </div>
-                        </div>
-                        <div class="h-10 w-px bg-white/20"></div>
-                        <div class="text-center">
-                            <p class="text-xs font-medium text-blue-200 uppercase">개인 최고(PR)</p>
-                            <div class="flex items-baseline justify-center gap-1 mt-1">
-                                <span class="text-xl sm:text-2xl font-extrabold text-amber-300" id="player-best-dist">-</span>
-                            </div>
+                <!-- 최근 측정 거리별 심박수 그래프 -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">최근 측정 구간별 심박수 (400m 단위)</h3>
+                            <p class="text-xs text-slate-500">가장 최근 측정의 거리별 심박수 변화</p>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 선수 개인 누적 평균 & 최근 지표 4종 -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-500">누적 평균 거리</p>
-                    <div class="flex items-baseline gap-1 mt-1">
-                        <span class="text-xl sm:text-2xl font-extrabold text-blue-600" id="player-stat-avg-dist">-</span>
-                        <span class="text-xs text-slate-500">m</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1" id="player-stat-avg-vo2">평균 VO2 -</p>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-500">누적 평균 %HRmax</p>
-                    <div class="flex items-baseline gap-1 mt-1">
-                        <span class="text-xl sm:text-2xl font-extrabold text-rose-600" id="player-stat-avg-hrpct">-</span>
-                        <span class="text-xs text-slate-500">%</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1">최대심박 <span id="player-max-hr" class="font-semibold text-slate-600">-</span> bpm</p>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-500">최근 평균 심박</p>
-                    <div class="flex items-baseline gap-1 mt-1">
-                        <span class="text-xl sm:text-2xl font-extrabold text-slate-900" id="player-avg-hr">-</span>
-                        <span class="text-xs text-slate-500">bpm</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1">최고 <span id="player-peak-hr" class="font-semibold text-slate-600">-</span> bpm</p>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-500">최근 1km 페이스</p>
-                    <div class="flex items-baseline gap-1 mt-1">
-                        <span class="text-xl sm:text-2xl font-extrabold text-emerald-600" id="player-pace">-</span>
-                        <span class="text-xs text-slate-500">/km</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1" id="player-last-device">워치 GPS 기록</p>
-                </div>
-            </div>
-
-            <!-- 나의 성장/퇴화 추이 차트 (누적 기록) -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-900">나의 성장·퇴화 추이 (누적 기록)</h3>
-                        <p class="text-xs text-slate-500">회차별 12분 거리(m)와 심박 사용률(%HRmax) 변화를 확인하세요</p>
-                    </div>
-                    <button onclick="openRecordModal(selectedPlayerId)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition self-start">
-                        + 내 새 기록 추가
-                    </button>
-                </div>
-                <div class="relative h-60 w-full">
-                    <canvas id="playerProgressChart"></canvas>
-                </div>
-            </div>
-
-            <!-- 최근 측정 거리별 심박수 그래프 -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-900">최근 측정 구간별 심박수 (400m 단위)</h3>
-                        <p class="text-xs text-slate-500">가장 최근 측정의 거리별 심박수 변화</p>
+                    <div class="relative h-56 w-full">
+                        <canvas id="playerHrChart"></canvas>
                     </div>
                 </div>
-                <div class="relative h-56 w-full">
-                    <canvas id="playerHrChart"></canvas>
-                </div>
-            </div>
 
-            <!-- 간단한 팀 순위 보드 -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-base font-bold text-slate-900">팀 순위 보드 (최근 기록 기준)</h3>
-                    <span class="text-xs text-slate-500">내 기록 강조</span>
+                <!-- 간단한 팀 순위 보드 -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-slate-900">팀 순위 보드 (최근 기록 기준)</h3>
+                        <span class="text-xs text-slate-500">내 기록 강조</span>
+                    </div>
+                    <div id="player-mini-leaderboard" class="space-y-2"></div>
                 </div>
-                <div id="player-mini-leaderboard" class="space-y-2"></div>
-            </div>
-        </section>
-
-    </main>
+            </section>
+        </main>
+    </div>
 
     <!-- ========================================================= -->
     <!-- 모달 1: 관리자용 선수 누적 성장 & 상세 분석 모달 -->
@@ -397,16 +495,13 @@
             </div>
 
             <div class="p-6 space-y-5">
-                <!-- 누적 요약 스탯 4개 -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="modal-stats-grid"></div>
 
-                <!-- 탭 전환 버튼 -->
                 <div class="flex p-1 rounded-xl bg-slate-100 border border-slate-200/80">
                     <button id="tab-btn-history" onclick="switchDetailTab('history')" class="flex-1 py-2 rounded-lg text-xs sm:text-sm font-bold transition">📈 성장/퇴화 추이 (누적)</button>
                     <button id="tab-btn-splits" onclick="switchDetailTab('splits')" class="flex-1 py-2 rounded-lg text-xs sm:text-sm font-bold transition">❤️ 최근 구간별 심박 분석</button>
                 </div>
 
-                <!-- 탭 1: 누적 성장/퇴화 추이 -->
                 <div id="detail-tab-history" class="space-y-4">
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70">
                         <h4 class="text-xs font-bold text-slate-700 mb-3">회차별 12분 거리(m) & 평균 심박 사용률(%HRmax) 추이</h4>
@@ -438,7 +533,6 @@
                     </div>
                 </div>
 
-                <!-- 탭 2: 최근 구간별 심박 분석 -->
                 <div id="detail-tab-splits" class="hidden space-y-4">
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70">
                         <h4 class="text-xs font-bold text-slate-700 mb-3">최근 측정 400m 구간별 심박수 & %HRmax</h4>
@@ -488,47 +582,53 @@
                 </button>
             </div>
 
-            <form id="record-form" onsubmit="handleRecordSubmit(event)" class="p-6 space-y-4">
-                <!-- 대상 선택: 기존 선수 누적 vs 신규 선수 -->
-                <div class="flex p-1 rounded-xl bg-slate-100 border border-slate-200">
+            <form id="record-form" onsubmit="handleRecordSubmit(event)" novalidate class="p-6 space-y-4">
+                <!-- 대상 선택 (관리자만 표시, 선수 본인 로그인 시 숨김) -->
+                <div id="record-target-toggle" class="flex p-1 rounded-xl bg-slate-100 border border-slate-200">
                     <button type="button" id="btn-target-existing" onclick="setRecordTargetMode('existing')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition">기존 선수에 기록 누적</button>
                     <button type="button" id="btn-target-new" onclick="setRecordTargetMode('new')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition">신규 선수 등록</button>
                 </div>
 
                 <!-- 기존 선수 선택 UI -->
-                <div id="target-existing-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">선수 선택 *</label>
-                        <select id="input-existing-player" onchange="onExistingPlayerChange()" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">측정 날짜 *</label>
-                        <input type="date" id="input-date" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
-                    </div>
+                <div id="target-existing-fields">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">선수 선택 *</label>
+                    <select id="input-existing-player" onchange="onExistingPlayerChange()" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"></select>
                 </div>
 
                 <!-- 신규 선수 입력 UI -->
-                <div id="target-new-fields" class="hidden grid grid-cols-3 gap-2.5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">선수 이름 *</label>
-                        <input type="text" id="input-name" placeholder="예: 홍길동" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200">
+                <div id="target-new-fields" class="hidden space-y-2.5">
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">선수 이름 *</label>
+                            <input type="text" id="input-name" placeholder="예: 홍길동" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">포지션</label>
+                            <select id="input-position" class="w-full px-2.5 py-2 text-sm rounded-xl border border-slate-200 bg-white">
+                                <option value="FW">FW</option>
+                                <option value="MF" selected>MF</option>
+                                <option value="DF">DF</option>
+                                <option value="GK">GK</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">나이 (만)</label>
+                            <input type="number" id="input-age" min="10" max="70" value="23" oninput="updateMaxHrPreview(); renderSplitInputs();" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200">
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">포지션</label>
-                        <select id="input-position" class="w-full px-2.5 py-2 text-sm rounded-xl border border-slate-200 bg-white">
-                            <option value="FW">FW</option>
-                            <option value="MF" selected>MF</option>
-                            <option value="DF">DF</option>
-                            <option value="GK">GK</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">나이 (만)</label>
-                        <input type="number" id="input-age" min="12" max="60" value="23" oninput="updateMaxHrPreview(); renderSplitInputs();" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">선수 로그인 비밀번호 (PIN)</label>
+                        <input type="text" id="input-pin" inputmode="numeric" maxlength="6" value="1234" placeholder="기본: 1234" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200">
                     </div>
                 </div>
 
-                <!-- 워치 데이터 가져오기 섹션 (Apple Watch / Galaxy Watch 공용) -->
+                <!-- 공통 측정 날짜 -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">측정 날짜 *</label>
+                    <input type="date" id="input-date" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+                </div>
+
+                <!-- 워치 데이터 가져오기 섹션 -->
                 <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50/70 border border-blue-200/80 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
@@ -541,20 +641,16 @@
                         </select>
                     </div>
 
-                    <!-- 1) GPX / TCX 파일 업로드 -->
                     <div class="flex flex-col sm:flex-row gap-2">
                         <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 border-dashed border-blue-300 bg-white hover:bg-blue-50 cursor-pointer transition text-xs font-bold text-blue-700">
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                             <span>GPX / TCX 파일 업로드 (자동 파싱)</span>
                             <input type="file" id="watch-file-input" accept=".gpx,.tcx,.xml" onchange="handleWatchFileUpload(event)" class="hidden">
                         </label>
                         <button type="button" onclick="connectBluetoothHR()" class="px-3 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-1.5 shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
                             BLE 심박 연결
                         </button>
                     </div>
 
-                    <!-- BLE 실시간 심박 표시 영역 (연결 시 표시) -->
                     <div id="ble-status-box" class="hidden p-2.5 rounded-xl bg-white border border-indigo-200 flex items-center justify-between text-xs">
                         <span class="font-semibold text-indigo-800 flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
@@ -563,7 +659,6 @@
                         <button type="button" onclick="disconnectBluetoothHR()" class="text-slate-500 hover:text-slate-800 font-bold">연결 해제</button>
                     </div>
 
-                    <!-- 빠른 시뮬레이션 버튼 -->
                     <div class="flex items-center justify-between pt-1">
                         <span class="text-[11px] text-slate-500">테스트용 가상 워치 데이터 생성:</span>
                         <div class="flex gap-1.5">
@@ -577,7 +672,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">12분 GPS 거리 (m) *</label>
-                        <input type="number" id="input-distance" required min="1000" max="4500" step="10" value="3050" oninput="renderSplitInputs()" class="w-full px-3 py-2 text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+                        <input type="number" id="input-distance" min="400" max="5000" step="1" value="3050" oninput="renderSplitInputs()" class="w-full px-3 py-2 text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
                     </div>
                     <div class="flex flex-col justify-center bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
                         <span class="text-[11px] font-semibold text-slate-500">적용 최대 심박수 (220-나이)</span>
@@ -624,22 +719,22 @@
                         <h4 class="font-extrabold text-slate-900">1. 표준 운동 파일 (GPX / TCX) 업로드</h4>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed mb-3">
-                        웹 브라우저는 보안상 Apple HealthKit이나 Samsung Health에 직접 접근할 수 없습니다. 대신 두 워치 모두 표준 GPS+심박 포맷인 <strong>GPX / TCX</strong> 추출을 지원하며, 본 앱에 파일을 올리면 거리와 400m별 심박수를 자동 계산합니다.
+                        애플워치와 갤럭시 워치 모두 표준 GPS+심박 포맷인 <strong>GPX / TCX</strong> 추출을 지원하며, 본 앱에 파일을 올리면 거리와 400m별 심박수를 자동 계산합니다.
                     </p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div class="bg-white p-3 rounded-xl border border-slate-200">
                             <p class="font-bold text-slate-900 mb-1">🍎 Apple Watch (iOS)</p>
                             <ul class="list-disc list-inside space-y-1 text-slate-600">
                                 <li>기본 '운동' 앱으로 12분 달리기 측정</li>
-                                <li><strong>HealthFit</strong> 또는 <strong>WorkOutDoors</strong> / <strong>Strava</strong> 앱에서 GPX/TCX 내보내기</li>
+                                <li>HealthFit / WorkOutDoors / Strava에서 GPX 내보내기</li>
                                 <li>본 웹앱 '시계 기록 추가'에서 파일 업로드</li>
                             </ul>
                         </div>
                         <div class="bg-white p-3 rounded-xl border border-slate-200">
                             <p class="font-bold text-slate-900 mb-1">⌚ Galaxy Watch (Android)</p>
                             <ul class="list-disc list-inside space-y-1 text-slate-600">
-                                <li>'삼성 헬스(Samsung Health)'로 12분 달리기 측정</li>
-                                <li>운동 기록 우측 상단 메뉴 → <strong>GPX 파일로 내보내기</strong></li>
+                                <li>'삼성 헬스'로 12분 달리기 측정</li>
+                                <li>운동 기록 메뉴 → <strong>GPX 파일로 내보내기</strong></li>
                                 <li>본 웹앱 '시계 기록 추가'에서 파일 업로드</li>
                             </ul>
                         </div>
@@ -649,21 +744,10 @@
                 <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                     <div class="flex items-center gap-2 mb-2">
                         <span class="px-2 py-0.5 rounded-md bg-slate-700 text-white text-[11px] font-bold">팀 실무 자동화</span>
-                        <h4 class="font-extrabold text-slate-900">2. 클라우드 허브(Strava API / Terra API) 자동 연동</h4>
+                        <h4 class="font-extrabold text-slate-900">2. 클라우드 허브(Strava API) 원클릭 자동 연동</h4>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        실제 구단 운영 시 선수들이 파일을 매번 올리지 않게 하려면, <strong>Strava(무료)</strong>나 <strong>Terra / Vital API</strong>를 중간 허브로 사용합니다.
-                        선수들이 각자의 애플워치(Apple Health)와 갤럭시 워치(Samsung Health)를 Strava에 한 번만 연동해 두면, 웹 서버가 <strong>Strava OAuth API</strong>로 두 기종의 GPS·심박 스트림을 통일된 JSON 형식으로 자동 수집합니다.
-                    </p>
-                </div>
-
-                <div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white text-[11px] font-bold">실시간 측정 · 현재 앱 지원</span>
-                        <h4 class="font-extrabold text-slate-900">3. Web Bluetooth API (BLE 심박 브로드캐스트)</h4>
-                    </div>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Chrome/Edge 브라우저에서 <strong>BLE 심박수 프로파일(0x180D)</strong>을 지원하는 워치(갤럭시 워치 심박 브로드캐스트 앱, 애플워치 HeartCast/ECHO 앱, 가슴 스트랩 등)를 직접 연결해 실시간 심박을 수신할 수 있습니다.
+                        선수가 최초 1회만 본인 워치(Apple 건강 / 삼성 헬스)를 Strava에 연동해 두면, 이후 워치로 뛴 기록이 버튼 한 번으로 자동 수집됩니다.
                     </p>
                 </div>
 
@@ -675,7 +759,7 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- 모달 4: 선수 최초 1회 워치 원클릭 연결 모달 (Strava 허브 OAuth 흐름) -->
+    <!-- 모달 4: 선수 최초 1회 워치 원클릭 연결 모달 -->
     <!-- ========================================================= -->
     <div id="watch-connect-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 fade-in overflow-hidden">
@@ -707,14 +791,7 @@
                     </div>
                 </div>
 
-                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 space-y-1">
-                    <p class="font-bold text-slate-800">연동 시 자동 수집되는 항목</p>
-                    <p>• 12분 쿠퍼 테스트 GPS 총 거리 (m)</p>
-                    <p>• 400m 구간별 심박수 스트림 (bpm)</p>
-                </div>
-
                 <button type="button" id="btn-confirm-oauth" onclick="confirmWatchOAuthConnect()" class="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 text-white text-sm font-extrabold shadow-md hover:from-orange-600 hover:to-rose-600 active:scale-[0.98] transition flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                     <span>Strava 계정으로 원클릭 연결 승인</span>
                 </button>
             </div>
@@ -728,12 +805,10 @@
     <!-- 자바스크립트 로직 -->
     <!-- ========================================================= -->
     <script>
-        // ---------------------------------------------------------
-        // 1. 누적 데이터 구조 및 초기 샘플 (선수별 3회차 누적 기록)
-        // ---------------------------------------------------------
         const STORAGE_KEY = 'cooper_pro_longitudinal_v2';
+        const AUTH_STORAGE_KEY = 'cooper_pro_auth_session_v1';
+        const ADMIN_PIN = '0000';
 
-        /** 거리 기반 자연스러운 400m 구간 심박수 생성 헬퍼 */
         function makeSplits(distance, startHr, endHr) {
             const points = [];
             for (let d = 400; d < distance; d += 400) points.push(d);
@@ -747,7 +822,7 @@
 
         const DEFAULT_PLAYERS = [
             {
-                id: 'p1', name: '김민재', position: 'DF', age: 27,
+                id: 'p1', name: '김민재', position: 'DF', age: 27, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: '2026-11-18 09:42' },
                 records: [
                     { id: 'r101', date: '2026-09-12', distance: 2980, device: 'Apple Watch', splits: makeSplits(2980, 145, 185) },
@@ -756,7 +831,7 @@
                 ]
             },
             {
-                id: 'p2', name: '이강인', position: 'MF', age: 25,
+                id: 'p2', name: '이강인', position: 'MF', age: 25, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: '2026-11-18 09:45' },
                 records: [
                     { id: 'r201', date: '2026-09-12', distance: 3180, device: 'Apple Watch', splits: makeSplits(3180, 148, 192) },
@@ -765,7 +840,7 @@
                 ]
             },
             {
-                id: 'p3', name: '박지성', position: 'MF', age: 22,
+                id: 'p3', name: '박지성', position: 'MF', age: 22, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Galaxy Watch', lastSyncedAt: '2026-11-18 09:40' },
                 records: [
                     { id: 'r301', date: '2026-09-12', distance: 3390, device: 'Galaxy Watch', splits: makeSplits(3390, 140, 184) },
@@ -774,7 +849,7 @@
                 ]
             },
             {
-                id: 'p4', name: '손흥민', position: 'FW', age: 31,
+                id: 'p4', name: '손흥민', position: 'FW', age: 31, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Galaxy Watch', lastSyncedAt: '2026-11-18 09:50' },
                 records: [
                     { id: 'r401', date: '2026-09-12', distance: 3250, device: 'Galaxy Watch', splits: makeSplits(3250, 141, 180) },
@@ -783,7 +858,7 @@
                 ]
             },
             {
-                id: 'p5', name: '황희찬', position: 'FW', age: 28,
+                id: 'p5', name: '황희찬', position: 'FW', age: 28, pin: '1234',
                 watchSync: { connected: false, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: null },
                 records: [
                     { id: 'r501', date: '2026-09-12', distance: 3120, device: 'Apple Watch', splits: makeSplits(3120, 147, 186) },
@@ -792,7 +867,7 @@
                 ]
             },
             {
-                id: 'p6', name: '정우영', position: 'MF', age: 24,
+                id: 'p6', name: '정우영', position: 'MF', age: 24, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Galaxy Watch', lastSyncedAt: '2026-11-18 09:38' },
                 records: [
                     { id: 'r601', date: '2026-09-12', distance: 2860, device: 'Galaxy Watch', splits: makeSplits(2860, 146, 187) },
@@ -801,7 +876,7 @@
                 ]
             },
             {
-                id: 'p7', name: '설영우', position: 'DF', age: 26,
+                id: 'p7', name: '설영우', position: 'DF', age: 26, pin: '1234',
                 watchSync: { connected: true, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: '2026-11-18 09:41' },
                 records: [
                     { id: 'r701', date: '2026-09-12', distance: 3150, device: 'Apple Watch', splits: makeSplits(3150, 142, 182) },
@@ -810,7 +885,7 @@
                 ]
             },
             {
-                id: 'p8', name: '조현우', position: 'GK', age: 32,
+                id: 'p8', name: '조현우', position: 'GK', age: 32, pin: '1234',
                 watchSync: { connected: false, provider: 'Strava', device: 'Galaxy Watch', lastSyncedAt: null },
                 records: [
                     { id: 'r801', date: '2026-09-12', distance: 2540, device: 'Galaxy Watch', splits: makeSplits(2540, 138, 176) },
@@ -820,13 +895,14 @@
             }
         ];
 
-        // 전역 상태 및 차트 인스턴스 변수
+        // 전역 상태
         let players = [];
-        let currentRole = 'manager'; // 'manager' | 'player'
-        let metricMode = 'latest';   // 'latest' | 'average'
+        let currentUser = null; // { role: 'manager' } | { role: 'player', playerId: 'p1' }
+        let currentRole = 'manager';
+        let metricMode = 'latest';
         let selectedPlayerId = 'p1';
         let activeDetailPlayerId = null;
-        let recordTargetMode = 'existing'; // 'existing' | 'new'
+        let recordTargetMode = 'existing';
         let pendingConnectDevice = 'Apple Watch';
         let isSyncing = false;
 
@@ -838,17 +914,165 @@
         let bleDevice = null;
 
         // ---------------------------------------------------------
-        // 2. 스포츠 생리학 & 누적 통계 계산
+        // 1. 인증 (로그인 / 회원가입 / 로그아웃)
         // ---------------------------------------------------------
-        function calcMaxHR(age) {
-            return 220 - age;
+        function switchAuthTab(tab) {
+            const tabs = ['player', 'manager', 'signup'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`auth-tab-${t}`);
+                const form = document.getElementById(t === 'signup' ? 'form-signup-player' : `form-login-${t}`);
+                if (t === tab) {
+                    btn.className = 'py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+                    form.classList.remove('hidden');
+                } else {
+                    btn.className = 'py-2 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800 transition';
+                    form.classList.add('hidden');
+                }
+            });
+            if (tab === 'player') renderQuickLoginChips();
         }
 
-        function calcVO2Max(distance) {
-            return Math.max(20, Number(((distance - 504.9) / 44.73).toFixed(1)));
+        function renderQuickLoginChips() {
+            const box = document.getElementById('quick-login-chips');
+            if (!box) return;
+            box.innerHTML = players.slice(0, 6).map(p => `
+                <button type="button" onclick="fillQuickLogin('${p.name}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-700 text-[11px] font-semibold text-slate-600 transition">
+                    ${p.name}
+                </button>
+            `).join('');
         }
+
+        function fillQuickLogin(name) {
+            document.getElementById('login-player-name').value = name;
+            document.getElementById('login-player-pin').value = '1234';
+        }
+
+        function handlePlayerLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('login-player-name').value.trim();
+            const pin = document.getElementById('login-player-pin').value.trim();
+
+            const found = players.find(p => p.name === name);
+            if (!found) {
+                showToast(`'${name}' 선수를 찾을 수 없습니다. 이름을 확인하거나 선수 가입을 진행해 주세요.`, 'error');
+                return;
+            }
+            const expectedPin = found.pin || '1234';
+            if (pin !== expectedPin) {
+                showToast('비밀번호(PIN)가 일치하지 않습니다.', 'error');
+                return;
+            }
+
+            currentUser = { role: 'player', playerId: found.id };
+            saveAuthSession();
+            enterApp();
+            showToast(`${found.name} 선수님, 환영합니다!`, 'success');
+        }
+
+        function handleManagerLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('login-manager-pin').value.trim();
+            if (pin !== ADMIN_PIN) {
+                showToast('관리자 비밀번호가 올바르지 않습니다. (초기값: 0000)', 'error');
+                return;
+            }
+            currentUser = { role: 'manager' };
+            saveAuthSession();
+            enterApp();
+            showToast('팀 관리자 모드로 로그인되었습니다.', 'success');
+        }
+
+        function handlePlayerSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const position = document.getElementById('signup-position').value;
+            const age = parseInt(document.getElementById('signup-age').value, 10);
+            const pin = document.getElementById('signup-pin').value.trim();
+
+            if (!name) { showToast('이름을 입력해 주세요.', 'error'); return; }
+            if (players.some(p => p.name === name)) {
+                showToast('이미 등록된 이름입니다. 선수 로그인을 이용해 주세요.', 'error');
+                return;
+            }
+            if (pin.length < 4) { showToast('비밀번호는 4자리 이상 입력해 주세요.', 'error'); return; }
+
+            const newPlayer = {
+                id: 'p_' + Date.now(),
+                name,
+                position,
+                age: isNaN(age) ? 22 : age,
+                pin,
+                watchSync: { connected: false, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: null },
+                records: []
+            };
+            players.push(newPlayer);
+            saveData();
+
+            currentUser = { role: 'player', playerId: newPlayer.id };
+            saveAuthSession();
+            enterApp();
+            showToast(`${name} 선수 가입 완료! 워치를 연결하거나 첫 기록을 등록해 보세요.`, 'success');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch (e) {}
+            document.getElementById('app-shell').classList.add('hidden');
+            document.getElementById('view-auth').classList.remove('hidden');
+            document.getElementById('login-player-pin').value = '';
+            document.getElementById('login-manager-pin').value = '';
+            switchAuthTab('player');
+            showToast('로그아웃되었습니다.', 'info');
+        }
+
+        function saveAuthSession() {
+            try { localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser)); } catch (e) {}
+        }
+
+        function loadAuthSession() {
+            try {
+                const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed.role === 'manager') return parsed;
+                if (parsed.role === 'player' && players.some(p => p.id === parsed.playerId)) return parsed;
+            } catch (e) {}
+            return null;
+        }
+
+        function enterApp() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('app-shell').classList.remove('hidden');
+
+            const managerSwitcher = document.getElementById('manager-role-switcher');
+            const playerBadge = document.getElementById('player-auth-badge');
+
+            if (currentUser.role === 'manager') {
+                managerSwitcher.classList.remove('hidden');
+                playerBadge.classList.add('hidden');
+                playerBadge.classList.remove('inline-flex');
+                document.getElementById('header-subtitle').textContent = '팀 관리자 모드 · 전체 선수 분석';
+                switchRole('manager');
+            } else {
+                const me = players.find(p => p.id === currentUser.playerId);
+                selectedPlayerId = currentUser.playerId;
+                managerSwitcher.classList.add('hidden');
+                playerBadge.classList.remove('hidden');
+                playerBadge.classList.add('inline-flex');
+                document.getElementById('header-player-name-label').textContent = `${me ? me.name : ''} 선수`;
+                document.getElementById('header-subtitle').textContent = '선수 개인 기록 · 내 순위 확인';
+                switchRole('player');
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 2. 스포츠 생리학 & 누적 통계 계산 (0회 기록 선수 안전 지원)
+        // ---------------------------------------------------------
+        function calcMaxHR(age) { return 220 - age; }
+        function calcVO2Max(distance) { return Math.max(20, Number(((distance - 504.9) / 44.73).toFixed(1))); }
 
         function getCooperGrade(distance) {
+            if (!distance || distance <= 0) return { label: '미측정', bg: 'bg-slate-100 text-slate-600 border-slate-200' };
             if (distance >= 3200) return { label: '최우수 (Elite)', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
             if (distance >= 2900) return { label: '우수 (Excellent)', bg: 'bg-blue-50 text-blue-700 border-blue-200' };
             if (distance >= 2600) return { label: '양호 (Good)', bg: 'bg-indigo-50 text-indigo-700 border-indigo-200' };
@@ -857,6 +1081,7 @@
         }
 
         function getHRZone(pct) {
+            if (!pct || pct <= 0) return { short: '미측정', barColor: 'bg-slate-300', badge: 'bg-slate-100 text-slate-500 border-slate-200' };
             if (pct >= 90) return { short: 'Z5 최대부하', barColor: 'bg-rose-500', badge: 'bg-rose-50 text-rose-700 border-rose-200' };
             if (pct >= 80) return { short: 'Z4 고강도', barColor: 'bg-orange-500', badge: 'bg-orange-50 text-orange-700 border-orange-200' };
             if (pct >= 70) return { short: 'Z3 유산소', barColor: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
@@ -872,7 +1097,6 @@
             return `${min}'${sec.toString().padStart(2, '0')}"`;
         }
 
-        /** 단일 회차 기록 지표 계산 */
         function enrichRecord(rec, maxHR) {
             const hrs = rec.splits.map(s => s.hr);
             const avgHR = Math.round(hrs.reduce((a, b) => a + b, 0) / hrs.length);
@@ -880,27 +1104,27 @@
             const avgHRPercent = Number(((avgHR / maxHR) * 100).toFixed(1));
             const peakHRPercent = Number(((peakHR / maxHR) * 100).toFixed(1));
             const vo2max = calcVO2Max(rec.distance);
-            return {
-                ...rec,
-                avgHR,
-                peakHR,
-                avgHRPercent,
-                peakHRPercent,
-                vo2max,
-                grade: getCooperGrade(rec.distance),
-                zone: getHRZone(avgHRPercent)
-            };
+            return { ...rec, avgHR, peakHR, avgHRPercent, peakHRPercent, vo2max, grade: getCooperGrade(rec.distance), zone: getHRZone(avgHRPercent) };
         }
 
-        /** 전체 선수의 누적 통계(평균, 성장/퇴화 추이, 순위) 산출 */
         function getEnrichedPlayers() {
             const enriched = players.map(p => {
                 const maxHR = calcMaxHR(p.age);
-                const sortedRecords = [...p.records]
+                const sortedRecords = [...(p.records || [])]
                     .sort((a, b) => new Date(a.date) - new Date(b.date))
                     .map(r => enrichRecord(r, maxHR));
 
                 const count = sortedRecords.length;
+                if (count === 0) {
+                    return {
+                        ...p, maxHR, records: [], count: 0, latest: null, previous: null,
+                        avgDistAll: 0, avgHrAll: 0, avgHrPctAll: 0, avgVo2All: 0, bestDist: 0,
+                        deltaDist: 0, deltaHrPct: 0, totalDeltaDist: 0, trendStatus: 'stable',
+                        displayDist: 0, displayHr: 0, displayHrPct: 0,
+                        displayZone: getHRZone(0), displayGrade: getCooperGrade(0)
+                    };
+                }
+
                 const latest = sortedRecords[count - 1];
                 const previous = count >= 2 ? sortedRecords[count - 2] : null;
                 const first = sortedRecords[0];
@@ -922,59 +1146,46 @@
                 const displayDist = metricMode === 'latest' ? latest.distance : avgDistAll;
                 const displayHr = metricMode === 'latest' ? latest.avgHR : avgHrAll;
                 const displayHrPct = metricMode === 'latest' ? latest.avgHRPercent : avgHrPctAll;
-                const displayZone = getHRZone(displayHrPct);
-                const displayGrade = getCooperGrade(displayDist);
 
                 return {
-                    ...p,
-                    maxHR,
-                    records: sortedRecords,
-                    count,
-                    latest,
-                    previous,
-                    avgDistAll,
-                    avgHrAll,
-                    avgHrPctAll,
-                    avgVo2All,
-                    bestDist,
-                    deltaDist,
-                    deltaHrPct,
-                    totalDeltaDist,
-                    trendStatus,
-                    displayDist,
-                    displayHr,
-                    displayHrPct,
-                    displayZone,
-                    displayGrade
+                    ...p, maxHR, records: sortedRecords, count, latest, previous,
+                    avgDistAll, avgHrAll, avgHrPctAll, avgVo2All, bestDist,
+                    deltaDist, deltaHrPct, totalDeltaDist, trendStatus,
+                    displayDist, displayHr, displayHrPct,
+                    displayZone: getHRZone(displayHrPct),
+                    displayGrade: getCooperGrade(displayDist)
                 };
             });
 
             const ranked = [...enriched].sort((a, b) => {
+                if (a.count === 0 && b.count > 0) return 1;
+                if (b.count === 0 && a.count > 0) return -1;
                 if (b.displayDist !== a.displayDist) return b.displayDist - a.displayDist;
                 return a.displayHrPct - b.displayHrPct;
             });
-            ranked.forEach((p, idx) => { p.rank = idx + 1; });
+
+            let currentRank = 1;
+            ranked.forEach(p => {
+                p.rank = p.count > 0 ? currentRank++ : '-';
+            });
 
             return ranked;
         }
 
         // ---------------------------------------------------------
-        // 3. 스토리지 로드/저장 & 초기화
+        // 3. 스토리지 로드/저장
         // ---------------------------------------------------------
         function loadData() {
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].records) {
+                    if (Array.isArray(parsed) && parsed.length > 0) {
                         players = parsed.map(p => ({
                             ...p,
-                            watchSync: p.watchSync || {
-                                connected: true,
-                                provider: 'Strava',
-                                device: (p.records[p.records.length - 1] && p.records[p.records.length - 1].device) || 'Apple Watch',
-                                lastSyncedAt: null
-                            }
+                            pin: p.pin || '1234',
+                            records: Array.isArray(p.records) ? p.records : [],
+                            watchSync: p.watchSync || { connected: false, provider: 'Strava', device: 'Apple Watch', lastSyncedAt: null }
                         }));
                         return;
                     }
@@ -1000,6 +1211,8 @@
         // 4. 화면 및 모드 전환
         // ---------------------------------------------------------
         function switchRole(role) {
+            if (currentUser && currentUser.role === 'player' && role === 'manager') return;
+
             currentRole = role;
             const managerView = document.getElementById('view-manager');
             const playerView = document.getElementById('view-player');
@@ -1009,14 +1222,14 @@
             if (role === 'manager') {
                 managerView.classList.remove('hidden');
                 playerView.classList.add('hidden');
-                btnManager.className = 'flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 bg-white text-blue-700 shadow-sm';
-                btnPlayer.className = 'flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900';
+                btnManager.className = 'flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 bg-white text-blue-700 shadow-sm';
+                btnPlayer.className = 'flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900';
                 setMetricMode(metricMode);
             } else {
                 managerView.classList.add('hidden');
                 playerView.classList.remove('hidden');
-                btnPlayer.className = 'flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 bg-white text-blue-700 shadow-sm';
-                btnManager.className = 'flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900';
+                btnPlayer.className = 'flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 bg-white text-blue-700 shadow-sm';
+                btnManager.className = 'flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900';
                 populatePlayerSelector();
                 renderPlayerView();
             }
@@ -1037,6 +1250,7 @@
         }
 
         function renderAll() {
+            if (!currentUser) return;
             if (currentRole === 'manager') renderManagerDashboard();
             else {
                 populatePlayerSelector();
@@ -1066,12 +1280,16 @@
             });
 
             filtered.sort((a, b) => {
-                if (sortBy === 'rank') return a.rank - b.rank;
+                if (sortBy === 'rank') {
+                    if (a.rank === '-' && b.rank !== '-') return 1;
+                    if (b.rank === '-' && a.rank !== '-') return -1;
+                    return (a.rank || 999) - (b.rank || 999);
+                }
                 if (sortBy === 'deltaDesc') return b.deltaDist - a.deltaDist;
                 if (sortBy === 'deltaAsc') return a.deltaDist - b.deltaDist;
                 if (sortBy === 'hrPercentDesc') return b.displayHrPct - a.displayHrPct;
                 if (sortBy === 'hrPercentAsc') return a.displayHrPct - b.displayHrPct;
-                return a.rank - b.rank;
+                return 0;
             });
 
             document.getElementById('total-players-badge').textContent = `${filtered.length}명`;
@@ -1089,28 +1307,20 @@
             }
 
             tbody.innerHTML = filtered.map(p => {
-                let rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold bg-slate-100 text-slate-600">${p.rank}</span>`;
+                let rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold bg-slate-100 text-slate-500">${p.rank}</span>`;
                 if (p.rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-extrabold bg-amber-100 text-amber-700 border border-amber-300">1</span>`;
                 else if (p.rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-extrabold bg-slate-200 text-slate-700 border border-slate-300">2</span>`;
                 else if (p.rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-extrabold bg-orange-100 text-orange-700 border border-orange-300">3</span>`;
 
                 let trendHtml = `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-600">유지 0m</span>`;
-                if (p.count < 2) {
+                if (p.count === 0) {
+                    trendHtml = `<span class="text-xs text-slate-400">미측정</span>`;
+                } else if (p.count < 2) {
                     trendHtml = `<span class="text-xs text-slate-400">1회차 (기준)</span>`;
                 } else if (p.deltaDist > 0) {
-                    trendHtml = `
-                        <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            ▲ +${p.deltaDist}m
-                        </span>
-                        <div class="text-[10px] text-slate-400 mt-0.5">심박 ${p.deltaHrPct > 0 ? '+' : ''}${p.deltaHrPct}%p</div>
-                    `;
+                    trendHtml = `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">▲ +${p.deltaDist}m</span><div class="text-[10px] text-slate-400 mt-0.5">심박 ${p.deltaHrPct > 0 ? '+' : ''}${p.deltaHrPct}%p</div>`;
                 } else if (p.deltaDist < 0) {
-                    trendHtml = `
-                        <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
-                            ▼ ${p.deltaDist}m
-                        </span>
-                        <div class="text-[10px] text-slate-400 mt-0.5">심박 ${p.deltaHrPct > 0 ? '+' : ''}${p.deltaHrPct}%p</div>
-                    `;
+                    trendHtml = `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-xs font-extrabold bg-rose-50 text-rose-700 border border-rose-200">▼ ${p.deltaDist}m</span><div class="text-[10px] text-slate-400 mt-0.5">심박 ${p.deltaHrPct > 0 ? '+' : ''}${p.deltaHrPct}%p</div>`;
                 }
 
                 const barWidth = Math.min(100, Math.max(0, p.displayHrPct));
@@ -1120,15 +1330,13 @@
                         <td class="py-3.5 px-4 text-center">${rankBadge}</td>
                         <td class="py-3.5 px-4">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 group-hover:bg-blue-100 group-hover:text-blue-700 transition">
-                                    ${p.name.slice(0, 2)}
-                                </div>
+                                <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 group-hover:bg-blue-100 group-hover:text-blue-700 transition">${p.name.slice(0, 2)}</div>
                                 <div>
                                     <div class="font-bold text-slate-900 flex items-center gap-1.5">
                                         ${p.name}
                                         <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${p.count}회</span>
                                         ${p.watchSync && p.watchSync.connected
-                                            ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-50 text-orange-600 border border-orange-200" title="${p.watchSync.device} 자동연동 중">⌚ 자동</span>`
+                                            ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-50 text-orange-600 border border-orange-200">⌚ 자동</span>`
                                             : `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">미연동</span>`
                                         }
                                     </div>
@@ -1137,21 +1345,25 @@
                             </div>
                         </td>
                         <td class="py-3.5 px-4 text-right">
-                            <div class="font-extrabold ${metricMode === 'latest' ? 'text-blue-700 text-base' : 'text-slate-700'}">${p.latest.distance.toLocaleString()}<span class="text-xs font-normal text-slate-400 ml-0.5">m</span></div>
-                            <div class="text-[10px] text-slate-400">${p.latest.date}</div>
+                            ${p.latest
+                                ? `<div class="font-extrabold ${metricMode === 'latest' ? 'text-blue-700 text-base' : 'text-slate-700'}">${p.latest.distance.toLocaleString()}<span class="text-xs font-normal text-slate-400 ml-0.5">m</span></div><div class="text-[10px] text-slate-400">${p.latest.date}</div>`
+                                : `<span class="text-xs text-slate-400">미측정</span>`
+                            }
                         </td>
                         <td class="py-3.5 px-4 text-right">
-                            <div class="font-extrabold ${metricMode === 'average' ? 'text-blue-700 text-base' : 'text-slate-700'}">${p.avgDistAll.toLocaleString()}<span class="text-xs font-normal text-slate-400 ml-0.5">m</span></div>
-                            <div class="text-[10px] text-slate-400">최고 ${p.bestDist.toLocaleString()}m</div>
+                            ${p.count > 0
+                                ? `<div class="font-extrabold ${metricMode === 'average' ? 'text-blue-700 text-base' : 'text-slate-700'}">${p.avgDistAll.toLocaleString()}<span class="text-xs font-normal text-slate-400 ml-0.5">m</span></div><div class="text-[10px] text-slate-400">최고 ${p.bestDist.toLocaleString()}m</div>`
+                                : `<span class="text-xs text-slate-400">-</span>`
+                            }
                         </td>
                         <td class="py-3.5 px-4 text-center">${trendHtml}</td>
                         <td class="py-3.5 px-4 text-right">
                             <div class="font-bold text-slate-800">${p.maxHR} <span class="text-xs font-normal text-slate-400">max</span></div>
-                            <div class="text-xs font-bold text-rose-600">${p.displayHr} <span class="text-[10px] font-normal text-slate-400">bpm (${metricMode === 'latest' ? '최근' : '평균'})</span></div>
+                            <div class="text-xs font-bold text-rose-600">${p.count > 0 ? p.displayHr : '-'} <span class="text-[10px] font-normal text-slate-400">bpm</span></div>
                         </td>
                         <td class="py-3.5 px-4">
                             <div class="flex items-center justify-between text-xs mb-1">
-                                <span class="font-extrabold text-slate-900">${p.displayHrPct}%</span>
+                                <span class="font-extrabold text-slate-900">${p.count > 0 ? p.displayHrPct + '%' : '-'}</span>
                                 <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${p.displayZone.badge}">${p.displayZone.short}</span>
                             </div>
                             <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -1170,13 +1382,14 @@
 
         function renderManagerKPIs(list) {
             const container = document.getElementById('manager-kpi-cards');
-            if (!list.length) return;
+            const recorded = list.filter(p => p.count > 0);
+            const recLen = recorded.length || 1;
 
-            const teamLatestAvgDist = Math.round(list.reduce((s, p) => s + p.latest.distance, 0) / list.length);
-            const teamAllTimeAvgDist = Math.round(list.reduce((s, p) => s + p.avgDistAll, 0) / list.length);
-            const teamAvgHrPct = (list.reduce((s, p) => s + p.displayHrPct, 0) / list.length).toFixed(1);
-            const improvingCount = list.filter(p => p.trendStatus === 'improving').length;
-            const decliningCount = list.filter(p => p.trendStatus === 'declining').length;
+            const teamLatestAvgDist = recorded.length ? Math.round(recorded.reduce((s, p) => s + p.latest.distance, 0) / recLen) : 0;
+            const teamAllTimeAvgDist = recorded.length ? Math.round(recorded.reduce((s, p) => s + p.avgDistAll, 0) / recLen) : 0;
+            const teamAvgHrPct = recorded.length ? (recorded.reduce((s, p) => s + p.displayHrPct, 0) / recLen).toFixed(1) : '0.0';
+            const improvingCount = recorded.filter(p => p.trendStatus === 'improving').length;
+            const decliningCount = recorded.filter(p => p.trendStatus === 'declining').length;
             const totalRecords = list.reduce((s, p) => s + p.count, 0);
 
             container.innerHTML = `
@@ -1188,7 +1401,6 @@
                     </div>
                     <p class="text-[11px] text-blue-600 font-semibold mt-1">누적 전체 평균: ${teamAllTimeAvgDist.toLocaleString()}m</p>
                 </div>
-
                 <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-sm">
                     <p class="text-xs font-semibold text-slate-500">팀 평균 심박 사용률</p>
                     <div class="flex items-baseline gap-1 mt-1">
@@ -1197,7 +1409,6 @@
                     </div>
                     <p class="text-[11px] text-slate-500 mt-1">${metricMode === 'latest' ? '최근 측정 기준' : '전체 누적 평균 기준'}</p>
                 </div>
-
                 <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-sm">
                     <p class="text-xs font-semibold text-slate-500">직전 대비 성장 / 퇴화</p>
                     <div class="flex items-baseline gap-2 mt-1">
@@ -1207,22 +1418,22 @@
                     </div>
                     <p class="text-[11px] text-slate-400 mt-1">거리 ±15m 이상 변동 기준</p>
                 </div>
-
                 <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-sm">
                     <p class="text-xs font-semibold text-slate-500">누적 측정 데이터</p>
                     <div class="flex items-baseline gap-1 mt-1">
                         <span class="text-2xl font-extrabold text-slate-900">${totalRecords}</span>
                         <span class="text-xs font-semibold text-slate-500">건</span>
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-1">등록 선수 ${list.length}명 평균 ${(totalRecords / list.length).toFixed(1)}회</p>
+                    <p class="text-[11px] text-slate-400 mt-1">등록 선수 ${list.length}명 평균 ${(totalRecords / (list.length || 1)).toFixed(1)}회</p>
                 </div>
             `;
         }
 
         function renderTeamTrendAndZones(list) {
-            const improving = list.filter(p => p.trendStatus === 'improving').length;
-            const stable = list.filter(p => p.trendStatus === 'stable').length;
-            const declining = list.filter(p => p.trendStatus === 'declining').length;
+            const recorded = list.filter(p => p.count > 0);
+            const improving = recorded.filter(p => p.trendStatus === 'improving').length;
+            const stable = recorded.filter(p => p.trendStatus === 'stable').length;
+            const declining = recorded.filter(p => p.trendStatus === 'declining').length;
 
             document.getElementById('team-trend-summary').innerHTML = `
                 <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
@@ -1239,11 +1450,11 @@
                 </div>
             `;
 
-            const total = list.length || 1;
+            const total = recorded.length || 1;
             const zones = [
-                { label: 'Zone 5 (90%+ 최대부하)', count: list.filter(p => p.displayHrPct >= 90).length, color: 'bg-rose-500' },
-                { label: 'Zone 4 (80~89% 고강도)', count: list.filter(p => p.displayHrPct >= 80 && p.displayHrPct < 90).length, color: 'bg-orange-500' },
-                { label: 'Zone 3 (70~79% 유산소)', count: list.filter(p => p.displayHrPct >= 70 && p.displayHrPct < 80).length, color: 'bg-emerald-500' }
+                { label: 'Zone 5 (90%+ 최대부하)', count: recorded.filter(p => p.displayHrPct >= 90).length, color: 'bg-rose-500' },
+                { label: 'Zone 4 (80~89% 고강도)', count: recorded.filter(p => p.displayHrPct >= 80 && p.displayHrPct < 90).length, color: 'bg-orange-500' },
+                { label: 'Zone 3 (70~79% 유산소)', count: recorded.filter(p => p.displayHrPct >= 70 && p.displayHrPct < 80).length, color: 'bg-emerald-500' }
             ];
 
             document.getElementById('hr-zone-distribution').innerHTML = zones.map(z => {
@@ -1266,39 +1477,15 @@
             const ctx = document.getElementById('teamOverviewChart').getContext('2d');
             if (teamOverviewChartInstance) teamOverviewChartInstance.destroy();
 
-            const top = list.slice(0, 10);
+            const top = list.filter(p => p.count > 0).slice(0, 10);
             teamOverviewChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: top.map(p => p.name),
                     datasets: [
-                        {
-                            label: '%HRmax (평균)',
-                            data: top.map(p => p.displayHrPct),
-                            type: 'line',
-                            yAxisID: 'y1',
-                            borderColor: '#e11d48',
-                            backgroundColor: '#e11d48',
-                            borderWidth: 2.5,
-                            pointRadius: 4,
-                            tension: 0.3
-                        },
-                        {
-                            label: '최근 12분 거리 (m)',
-                            data: top.map(p => p.latest.distance),
-                            yAxisID: 'y',
-                            backgroundColor: 'rgba(37, 99, 235, 0.85)',
-                            borderRadius: 6,
-                            maxBarThickness: 22
-                        },
-                        {
-                            label: '누적 평균 거리 (m)',
-                            data: top.map(p => p.avgDistAll),
-                            yAxisID: 'y',
-                            backgroundColor: 'rgba(148, 163, 184, 0.55)',
-                            borderRadius: 6,
-                            maxBarThickness: 22
-                        }
+                        { label: '%HRmax (평균)', data: top.map(p => p.displayHrPct), type: 'line', yAxisID: 'y1', borderColor: '#e11d48', backgroundColor: '#e11d48', borderWidth: 2.5, pointRadius: 4, tension: 0.3 },
+                        { label: '최근 12분 거리 (m)', data: top.map(p => p.latest.distance), yAxisID: 'y', backgroundColor: 'rgba(37, 99, 235, 0.85)', borderRadius: 6, maxBarThickness: 22 },
+                        { label: '누적 평균 거리 (m)', data: top.map(p => p.avgDistAll), yAxisID: 'y', backgroundColor: 'rgba(148, 163, 184, 0.55)', borderRadius: 6, maxBarThickness: 22 }
                     ]
                 },
                 options: {
@@ -1307,7 +1494,7 @@
                     interaction: { mode: 'index', intersect: false },
                     plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
                     scales: {
-                        y: { position: 'left', min: 2200, title: { display: true, text: '거리 (m)', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        y: { position: 'left', min: 2000, title: { display: true, text: '거리 (m)', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
                         y1: { position: 'right', min: 65, max: 100, title: { display: true, text: '%HRmax', font: { size: 11 } }, grid: { drawOnChartArea: false } },
                         x: { grid: { display: false } }
                     }
@@ -1329,60 +1516,95 @@
 
         function renderPlayerView() {
             const select = document.getElementById('player-selector');
-            if (select.value) selectedPlayerId = select.value;
+            const fixedTitle = document.getElementById('player-fixed-title');
+            const barSubtitle = document.getElementById('player-bar-subtitle');
+
+            if (currentUser && currentUser.role === 'player') {
+                selectedPlayerId = currentUser.playerId;
+                select.classList.add('hidden');
+                fixedTitle.classList.remove('hidden');
+                barSubtitle.textContent = '내 선수 계정';
+            } else {
+                if (select.value) selectedPlayerId = select.value;
+                select.classList.remove('hidden');
+                fixedTitle.classList.add('hidden');
+                barSubtitle.textContent = '관리자 미리보기 (선수 선택 가능)';
+            }
 
             const list = getEnrichedPlayers();
+            const recordedList = list.filter(p => p.count > 0);
             const me = list.find(p => p.id === selectedPlayerId) || list[0];
             if (!me) return;
 
+            fixedTitle.textContent = `${me.name} (${me.position} · 만 ${me.age}세)`;
             document.getElementById('player-avatar').textContent = me.name.slice(0, 2);
             document.getElementById('player-record-count-badge').textContent = `누적 ${me.count}회 측정`;
-            document.getElementById('player-test-date').textContent = me.latest.date;
+            document.getElementById('player-test-date').textContent = me.latest ? me.latest.date : '기록 없음';
 
             renderPlayerWatchSyncCard(me);
 
-            document.getElementById('player-grade-badge').textContent = me.latest.grade.label;
-            document.getElementById('player-distance').textContent = me.latest.distance.toLocaleString();
-            document.getElementById('player-avg-dist-hero').textContent = `${me.avgDistAll.toLocaleString()}m`;
-            document.getElementById('player-rank').textContent = `${me.rank}위`;
-            document.getElementById('player-total-count').textContent = `/ ${list.length}명`;
-            document.getElementById('player-best-dist').textContent = `${me.bestDist.toLocaleString()}m`;
-
-            const trendBadge = document.getElementById('player-trend-hero-badge');
-            if (me.count < 2) {
-                trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-slate-200';
-                trendBadge.textContent = '첫 측정 기준 기록';
-            } else if (me.deltaDist > 0) {
-                trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/25 text-emerald-200 border border-emerald-400/40';
-                trendBadge.textContent = `▲ 직전 대비 +${me.deltaDist}m 성장`;
-            } else if (me.deltaDist < 0) {
-                trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/25 text-rose-200 border border-rose-400/40';
-                trendBadge.textContent = `▼ 직전 대비 ${me.deltaDist}m 하락`;
+            if (me.count === 0) {
+                document.getElementById('player-grade-badge').textContent = '첫 측정 대기 중';
+                document.getElementById('player-trend-hero-badge').className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-slate-200';
+                document.getElementById('player-trend-hero-badge').textContent = '기록 없음';
+                document.getElementById('player-distance').textContent = '0';
+                document.getElementById('player-avg-dist-hero').textContent = '0m';
+                document.getElementById('player-rank').textContent = '-';
+                document.getElementById('player-total-count').textContent = `/ ${recordedList.length}명`;
+                document.getElementById('player-best-dist').textContent = '-';
+                document.getElementById('player-feedback-text').textContent = '아직 등록된 쿠퍼 테스트 기록이 없습니다. 상단에서 워치를 연결하거나 새 기록을 추가해 보세요!';
+                document.getElementById('player-stat-avg-dist').textContent = '-';
+                document.getElementById('player-stat-avg-vo2').textContent = '평균 VO2 -';
+                document.getElementById('player-stat-avg-hrpct').textContent = '-';
+                document.getElementById('player-max-hr').textContent = me.maxHR;
+                document.getElementById('player-avg-hr').textContent = '-';
+                document.getElementById('player-peak-hr').textContent = '-';
+                document.getElementById('player-pace').textContent = '-';
+                document.getElementById('player-last-device').textContent = '측정 전';
             } else {
-                trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-slate-200';
-                trendBadge.textContent = '직전 기록 유지 (0m)';
+                document.getElementById('player-grade-badge').textContent = me.latest.grade.label;
+                document.getElementById('player-distance').textContent = me.latest.distance.toLocaleString();
+                document.getElementById('player-avg-dist-hero').textContent = `${me.avgDistAll.toLocaleString()}m`;
+                document.getElementById('player-rank').textContent = `${me.rank}위`;
+                document.getElementById('player-total-count').textContent = `/ ${recordedList.length}명`;
+                document.getElementById('player-best-dist').textContent = `${me.bestDist.toLocaleString()}m`;
+
+                const trendBadge = document.getElementById('player-trend-hero-badge');
+                if (me.count < 2) {
+                    trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-slate-200';
+                    trendBadge.textContent = '첫 측정 기준 기록';
+                } else if (me.deltaDist > 0) {
+                    trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/25 text-emerald-200 border border-emerald-400/40';
+                    trendBadge.textContent = `▲ 직전 대비 +${me.deltaDist}m 성장`;
+                } else if (me.deltaDist < 0) {
+                    trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/25 text-rose-200 border border-rose-400/40';
+                    trendBadge.textContent = `▼ 직전 대비 ${me.deltaDist}m 하락`;
+                } else {
+                    trendBadge.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-slate-200';
+                    trendBadge.textContent = '직전 기록 유지 (0m)';
+                }
+
+                const diffAvg = me.latest.distance - me.avgDistAll;
+                document.getElementById('player-feedback-text').textContent =
+                    diffAvg >= 0
+                        ? `최근 기록이 본인의 누적 평균(${me.avgDistAll.toLocaleString()}m)보다 +${diffAvg}m 높습니다. 좋은 상승세입니다!`
+                        : `최근 기록이 본인의 누적 평균(${me.avgDistAll.toLocaleString()}m)보다 ${diffAvg}m 낮습니다. 회복과 페이스 조절에 신경 써보세요.`;
+
+                document.getElementById('player-stat-avg-dist').textContent = me.avgDistAll.toLocaleString();
+                document.getElementById('player-stat-avg-vo2').textContent = `누적 평균 VO2 ${me.avgVo2All}`;
+                document.getElementById('player-stat-avg-hrpct').textContent = me.avgHrPctAll;
+                document.getElementById('player-max-hr').textContent = me.maxHR;
+                document.getElementById('player-avg-hr').textContent = me.latest.avgHR;
+                document.getElementById('player-peak-hr').textContent = me.latest.peakHR;
+                document.getElementById('player-pace').textContent = calcPace(me.latest.distance);
+                document.getElementById('player-last-device').textContent = `${me.latest.device} 연동`;
             }
-
-            const diffAvg = me.latest.distance - me.avgDistAll;
-            document.getElementById('player-feedback-text').textContent =
-                diffAvg >= 0
-                    ? `최근 기록이 본인의 누적 평균(${me.avgDistAll.toLocaleString()}m)보다 +${diffAvg}m 높습니다. 좋은 상승세입니다!`
-                    : `최근 기록이 본인의 누적 평균(${me.avgDistAll.toLocaleString()}m)보다 ${diffAvg}m 낮습니다. 회복과 페이스 조절에 신경 써보세요.`;
-
-            document.getElementById('player-stat-avg-dist').textContent = me.avgDistAll.toLocaleString();
-            document.getElementById('player-stat-avg-vo2').textContent = `누적 평균 VO2 ${me.avgVo2All}`;
-            document.getElementById('player-stat-avg-hrpct').textContent = me.avgHrPctAll;
-            document.getElementById('player-max-hr').textContent = me.maxHR;
-            document.getElementById('player-avg-hr').textContent = me.latest.avgHR;
-            document.getElementById('player-peak-hr').textContent = me.latest.peakHR;
-            document.getElementById('player-pace').textContent = calcPace(me.latest.distance);
-            document.getElementById('player-last-device').textContent = `${me.latest.device} 연동`;
 
             renderPlayerProgressChart(me);
             renderPlayerHrChart(me);
 
             const board = document.getElementById('player-mini-leaderboard');
-            board.innerHTML = list.map(p => {
+            board.innerHTML = recordedList.map(p => {
                 const isMe = p.id === me.id;
                 const deltaTag = p.count >= 2
                     ? (p.deltaDist > 0 ? `<span class="text-[11px] font-bold text-emerald-600 ml-1">▲+${p.deltaDist}</span>`
@@ -1415,28 +1637,8 @@
                 data: {
                     labels: player.records.map((r, i) => `${i + 1}차 (${r.date.slice(5)})`),
                     datasets: [
-                        {
-                            label: '12분 거리 (m)',
-                            data: player.records.map(r => r.distance),
-                            yAxisID: 'y',
-                            borderColor: '#2563eb',
-                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 5
-                        },
-                        {
-                            label: '평균 심박 사용률 (%HRmax)',
-                            data: player.records.map(r => r.avgHRPercent),
-                            yAxisID: 'y1',
-                            borderColor: '#e11d48',
-                            borderDash: [5, 4],
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.3,
-                            pointRadius: 4
-                        }
+                        { label: '12분 거리 (m)', data: player.records.map(r => r.distance), yAxisID: 'y', borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, fill: true, tension: 0.3, pointRadius: 5 },
+                        { label: '평균 심박 사용률 (%HRmax)', data: player.records.map(r => r.avgHRPercent), yAxisID: 'y1', borderColor: '#e11d48', borderDash: [5, 4], borderWidth: 2, fill: false, tension: 0.3, pointRadius: 4 }
                     ]
                 },
                 options: {
@@ -1456,30 +1658,14 @@
             const ctx = document.getElementById('playerHrChart').getContext('2d');
             if (playerHrChartInstance) playerHrChartInstance.destroy();
 
-            const rec = player.latest;
+            const splits = player.latest ? player.latest.splits : [];
             playerHrChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: rec.splits.map(s => `${s.dist}m`),
+                    labels: splits.map(s => `${s.dist}m`),
                     datasets: [
-                        {
-                            label: '측정 심박수 (bpm)',
-                            data: rec.splits.map(s => s.hr),
-                            borderColor: '#e11d48',
-                            backgroundColor: 'rgba(225, 29, 72, 0.08)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.35,
-                            pointRadius: 4
-                        },
-                        {
-                            label: `최대 심박수 (${player.maxHR} bpm)`,
-                            data: rec.splits.map(() => player.maxHR),
-                            borderColor: '#94a3b8',
-                            borderDash: [6, 6],
-                            borderWidth: 1.5,
-                            pointRadius: 0
-                        }
+                        { label: '측정 심박수 (bpm)', data: splits.map(s => s.hr), borderColor: '#e11d48', backgroundColor: 'rgba(225, 29, 72, 0.08)', borderWidth: 2.5, fill: true, tension: 0.35, pointRadius: 4 },
+                        { label: `최대 심박수 (${player.maxHR} bpm)`, data: splits.map(() => player.maxHR), borderColor: '#94a3b8', borderDash: [6, 6], borderWidth: 1.5, pointRadius: 0 }
                     ]
                 },
                 options: {
@@ -1503,7 +1689,7 @@
             const p = list.find(item => item.id === playerId);
             if (!p) return;
 
-            document.getElementById('modal-player-name').textContent = `${p.name} (팀 ${p.rank}위)`;
+            document.getElementById('modal-player-name').textContent = `${p.name} (${p.rank === '-' ? '미측정' : '팀 ' + p.rank + '위'})`;
             document.getElementById('modal-player-meta').textContent = `${p.position} · 만 ${p.age}세 · 누적 ${p.count}회 측정`;
 
             const deltaText = p.count >= 2 ? `${p.deltaDist >= 0 ? '+' : ''}${p.deltaDist}m` : '-';
@@ -1512,68 +1698,63 @@
             document.getElementById('modal-stats-grid').innerHTML = `
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70">
                     <p class="text-[11px] font-semibold text-slate-500">누적 평균 거리</p>
-                    <p class="text-lg font-extrabold text-blue-700 mt-0.5">${p.avgDistAll.toLocaleString()}m</p>
+                    <p class="text-lg font-extrabold text-blue-700 mt-0.5">${p.count > 0 ? p.avgDistAll.toLocaleString() + 'm' : '-'}</p>
                 </div>
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70">
                     <p class="text-[11px] font-semibold text-slate-500">최근 거리 (직전 대비)</p>
-                    <p class="text-lg font-extrabold ${deltaColor} mt-0.5">${p.latest.distance.toLocaleString()}m <span class="text-xs">(${deltaText})</span></p>
+                    <p class="text-lg font-extrabold ${deltaColor} mt-0.5">${p.latest ? p.latest.distance.toLocaleString() + 'm' : '-'} <span class="text-xs">(${deltaText})</span></p>
                 </div>
                 <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200/70">
                     <p class="text-[11px] font-semibold text-rose-600">누적 평균 %HRmax</p>
-                    <p class="text-lg font-extrabold text-rose-700 mt-0.5">${p.avgHrPctAll}% <span class="text-xs">(${p.avgHrAll}bpm)</span></p>
+                    <p class="text-lg font-extrabold text-rose-700 mt-0.5">${p.count > 0 ? p.avgHrPctAll + '%' : '-'} <span class="text-xs">${p.count > 0 ? '(' + p.avgHrAll + 'bpm)' : ''}</span></p>
                 </div>
                 <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/70">
                     <p class="text-[11px] font-semibold text-indigo-600">첫 측정 대비 누적 변화</p>
-                    <p class="text-lg font-extrabold text-indigo-800 mt-0.5">${p.totalDeltaDist >= 0 ? '+' : ''}${p.totalDeltaDist}m</p>
+                    <p class="text-lg font-extrabold text-indigo-800 mt-0.5">${p.count >= 2 ? (p.totalDeltaDist >= 0 ? '+' : '') + p.totalDeltaDist + 'm' : '-'}</p>
                 </div>
             `;
 
-            document.getElementById('modal-history-body').innerHTML = [...p.records].reverse().map((r, revIdx, arr) => {
-                const prev = arr[revIdx + 1];
-                const diff = prev ? r.distance - prev.distance : null;
-                const diffHtml = diff === null
-                    ? `<span class="text-slate-400">기준</span>`
-                    : diff > 0 ? `<span class="font-bold text-emerald-600">▲ +${diff}m</span>`
-                    : diff < 0 ? `<span class="font-bold text-rose-600">▼ ${diff}m</span>`
-                    : `<span class="text-slate-500">0m</span>`;
+            document.getElementById('modal-history-body').innerHTML = p.records.length === 0
+                ? `<tr><td colspan="6" class="py-6 text-center text-slate-400">아직 등록된 측정 기록이 없습니다.</td></tr>`
+                : [...p.records].reverse().map((r, revIdx, arr) => {
+                    const prev = arr[revIdx + 1];
+                    const diff = prev ? r.distance - prev.distance : null;
+                    const diffHtml = diff === null ? `<span class="text-slate-400">기준</span>`
+                        : diff > 0 ? `<span class="font-bold text-emerald-600">▲ +${diff}m</span>`
+                        : diff < 0 ? `<span class="font-bold text-rose-600">▼ ${diff}m</span>`
+                        : `<span class="text-slate-500">0m</span>`;
+                    return `
+                        <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-800">${r.date}</td>
+                            <td class="py-2 px-3 text-slate-500">${r.device}</td>
+                            <td class="py-2 px-3 text-right font-extrabold text-slate-900">${r.distance.toLocaleString()}m</td>
+                            <td class="py-2 px-3 text-center">${diffHtml}</td>
+                            <td class="py-2 px-3 text-right font-bold text-rose-600">${r.avgHR} bpm (${r.avgHRPercent}%)</td>
+                            <td class="py-2 px-3 text-center"><button onclick="deleteSingleRecord('${p.id}', '${r.id}')" class="text-[11px] text-rose-500 hover:underline font-semibold">삭제</button></td>
+                        </tr>
+                    `;
+                }).join('');
 
-                return `
-                    <tr>
-                        <td class="py-2 px-3 font-semibold text-slate-800">${r.date}</td>
-                        <td class="py-2 px-3 text-slate-500">${r.device}</td>
-                        <td class="py-2 px-3 text-right font-extrabold text-slate-900">${r.distance.toLocaleString()}m</td>
-                        <td class="py-2 px-3 text-center">${diffHtml}</td>
-                        <td class="py-2 px-3 text-right font-bold text-rose-600">${r.avgHR} bpm (${r.avgHRPercent}%)</td>
-                        <td class="py-2 px-3 text-center">
-                            <button onclick="deleteSingleRecord('${p.id}', '${r.id}')" class="text-[11px] text-rose-500 hover:underline font-semibold">삭제</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            document.getElementById('modal-splits-body').innerHTML = !p.latest
+                ? `<tr><td colspan="4" class="py-6 text-center text-slate-400">최근 측정 기록이 없습니다.</td></tr>`
+                : p.latest.splits.map(s => {
+                    const pct = Number(((s.hr / p.maxHR) * 100).toFixed(1));
+                    const z = getHRZone(pct);
+                    return `
+                        <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-700">${s.dist.toLocaleString()}m</td>
+                            <td class="py-2 px-3 text-right font-bold text-slate-900">${s.hr} bpm</td>
+                            <td class="py-2 px-3 text-right font-extrabold text-rose-600">${pct}%</td>
+                            <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${z.badge}">${z.short}</span></td>
+                        </tr>
+                    `;
+                }).join('');
 
-            document.getElementById('modal-splits-body').innerHTML = p.latest.splits.map(s => {
-                const pct = Number(((s.hr / p.maxHR) * 100).toFixed(1));
-                const z = getHRZone(pct);
-                return `
-                    <tr>
-                        <td class="py-2 px-3 font-semibold text-slate-700">${s.dist.toLocaleString()}m</td>
-                        <td class="py-2 px-3 text-right font-bold text-slate-900">${s.hr} bpm</td>
-                        <td class="py-2 px-3 text-right font-extrabold text-rose-600">${pct}%</td>
-                        <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${z.badge}">${z.short}</span></td>
-                    </tr>
-                `;
-            }).join('');
-
-            document.getElementById('modal-add-record-btn').onclick = () => {
-                closeDetailModal();
-                openRecordModal(p.id);
-            };
+            document.getElementById('modal-add-record-btn').onclick = () => { closeDetailModal(); openRecordModal(p.id); };
             document.getElementById('modal-delete-player-btn').onclick = () => deletePlayer(p.id);
 
             const modal = document.getElementById('detail-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
+            modal.classList.remove('hidden'); modal.classList.add('flex');
             switchDetailTab('history');
             renderDetailCharts(p);
         }
@@ -1603,27 +1784,8 @@
                 data: {
                     labels: p.records.map(r => r.date),
                     datasets: [
-                        {
-                            label: '12분 거리 (m)',
-                            data: p.records.map(r => r.distance),
-                            yAxisID: 'y',
-                            borderColor: '#2563eb',
-                            backgroundColor: 'rgba(37, 99, 235, 0.12)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.25,
-                            pointRadius: 5
-                        },
-                        {
-                            label: '평균 %HRmax',
-                            data: p.records.map(r => r.avgHRPercent),
-                            yAxisID: 'y1',
-                            borderColor: '#e11d48',
-                            borderDash: [4, 4],
-                            borderWidth: 2,
-                            tension: 0.25,
-                            pointRadius: 4
-                        }
+                        { label: '12분 거리 (m)', data: p.records.map(r => r.distance), yAxisID: 'y', borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.12)', borderWidth: 3, fill: true, tension: 0.25, pointRadius: 5 },
+                        { label: '평균 %HRmax', data: p.records.map(r => r.avgHRPercent), yAxisID: 'y1', borderColor: '#e11d48', borderDash: [4, 4], borderWidth: 2, tension: 0.25, pointRadius: 4 }
                     ]
                 },
                 options: {
@@ -1639,30 +1801,14 @@
 
             const ctxS = document.getElementById('detailSplitsChart').getContext('2d');
             if (detailSplitsChartInstance) detailSplitsChartInstance.destroy();
+            const splits = p.latest ? p.latest.splits : [];
             detailSplitsChartInstance = new Chart(ctxS, {
                 type: 'line',
                 data: {
-                    labels: p.latest.splits.map(s => `${s.dist}m`),
+                    labels: splits.map(s => `${s.dist}m`),
                     datasets: [
-                        {
-                            label: '심박수 (bpm)',
-                            data: p.latest.splits.map(s => s.hr),
-                            yAxisID: 'y',
-                            borderColor: '#e11d48',
-                            backgroundColor: 'rgba(225, 29, 72, 0.1)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: '%HRmax',
-                            data: p.latest.splits.map(s => Number(((s.hr / p.maxHR) * 100).toFixed(1))),
-                            yAxisID: 'y1',
-                            borderColor: '#2563eb',
-                            borderDash: [4, 4],
-                            borderWidth: 2,
-                            tension: 0.3
-                        }
+                        { label: '심박수 (bpm)', data: splits.map(s => s.hr), yAxisID: 'y', borderColor: '#e11d48', backgroundColor: 'rgba(225, 29, 72, 0.1)', borderWidth: 2.5, fill: true, tension: 0.3 },
+                        { label: '%HRmax', data: splits.map(s => Number(((s.hr / p.maxHR) * 100).toFixed(1))), yAxisID: 'y1', borderColor: '#2563eb', borderDash: [4, 4], borderWidth: 2, tension: 0.3 }
                     ]
                 },
                 options: {
@@ -1679,54 +1825,58 @@
 
         function closeDetailModal() {
             const modal = document.getElementById('detail-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         }
 
         function deleteSingleRecord(playerId, recordId) {
             const p = players.find(x => x.id === playerId);
             if (!p) return;
-            if (p.records.length <= 1) {
-                showToast('선수의 마지막 1개 기록은 삭제할 수 없습니다. 선수 전체 삭제를 이용하세요.', 'error');
-                return;
-            }
             p.records = p.records.filter(r => r.id !== recordId);
-            saveData();
-            renderAll();
-            openDetailModal(playerId);
+            saveData(); renderAll(); openDetailModal(playerId);
             showToast('해당 회차 기록이 삭제되었습니다.', 'info');
         }
 
         function deletePlayer(playerId) {
-            if (players.length <= 1) {
-                showToast('최소 1명의 선수는 유지되어야 합니다.', 'error');
-                return;
-            }
+            if (players.length <= 1) { showToast('최소 1명의 선수는 유지되어야 합니다.', 'error'); return; }
             players = players.filter(p => p.id !== playerId);
-            saveData();
-            closeDetailModal();
-            renderAll();
+            saveData(); closeDetailModal(); renderAll();
             showToast('선수 전체 데이터가 삭제되었습니다.', 'info');
         }
 
         // ---------------------------------------------------------
-        // 8. 시계 기록 누적 등록 + GPX/TCX 실제 파서 + Web Bluetooth
+        // 8. 시계 기록 누적 등록 + GPX/TCX 파서 + BLE
         // ---------------------------------------------------------
-        function openRecordModal(preselectPlayerId = null) {
+        function openRecordModal(preselectPlayerId = null, initialMode = 'existing') {
             const modal = document.getElementById('record-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
 
             document.getElementById('input-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-pin').value = '1234';
 
             const sel = document.getElementById('input-existing-player');
-            sel.innerHTML = players.map(p => `<option value="${p.id}">${p.name} (${p.position} · 만 ${p.age}세)</option>`).join('');
+            const toggleBox = document.getElementById('record-target-toggle');
 
-            if (preselectPlayerId && players.find(p => p.id === preselectPlayerId)) {
-                sel.value = preselectPlayerId;
+            if (currentUser && currentUser.role === 'player') {
+                // 선수 본인 로그인 시 본인 계정에만 기록 추가 가능
+                const me = players.find(p => p.id === currentUser.playerId);
+                sel.innerHTML = me ? `<option value="${me.id}">${me.name} (${me.position} · 만 ${me.age}세)</option>` : '';
+                sel.disabled = true;
+                toggleBox.classList.add('hidden');
                 setRecordTargetMode('existing');
             } else {
-                setRecordTargetMode('existing');
+                sel.disabled = false;
+                toggleBox.classList.remove('hidden');
+                sel.innerHTML = players.map(p => `<option value="${p.id}">${p.name} (${p.position} · 만 ${p.age}세)</option>`).join('');
+                if (initialMode === 'new') {
+                    setRecordTargetMode('new');
+                    setTimeout(() => document.getElementById('input-name').focus(), 100);
+                } else if (preselectPlayerId && players.find(p => p.id === preselectPlayerId)) {
+                    sel.value = preselectPlayerId;
+                    setRecordTargetMode('existing');
+                } else {
+                    setRecordTargetMode('existing');
+                }
             }
 
             updateMaxHrPreview();
@@ -1735,8 +1885,7 @@
 
         function closeRecordModal() {
             const modal = document.getElementById('record-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         }
 
         function setRecordTargetMode(mode) {
@@ -1749,18 +1898,13 @@
             if (mode === 'existing') {
                 btnEx.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm';
                 btnNew.className = 'flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-600';
-                exFields.classList.remove('hidden');
-                newFields.classList.add('hidden');
-                document.getElementById('input-name').required = false;
+                exFields.classList.remove('hidden'); newFields.classList.add('hidden');
             } else {
                 btnNew.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm';
                 btnEx.className = 'flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-600';
-                newFields.classList.remove('hidden');
-                exFields.classList.add('hidden');
-                document.getElementById('input-name').required = true;
+                newFields.classList.remove('hidden'); exFields.classList.add('hidden');
             }
-            updateMaxHrPreview();
-            renderSplitInputs();
+            updateMaxHrPreview(); renderSplitInputs();
         }
 
         function getActiveFormAge() {
@@ -1772,14 +1916,8 @@
             return parseInt(document.getElementById('input-age').value, 10) || 23;
         }
 
-        function onExistingPlayerChange() {
-            updateMaxHrPreview();
-            renderSplitInputs();
-        }
-
-        function updateMaxHrPreview() {
-            document.getElementById('preview-max-hr').textContent = calcMaxHR(getActiveFormAge());
-        }
+        function onExistingPlayerChange() { updateMaxHrPreview(); renderSplitInputs(); }
+        function updateMaxHrPreview() { document.getElementById('preview-max-hr').textContent = calcMaxHR(getActiveFormAge()); }
 
         function renderSplitInputs(presetValues = null) {
             const dist = parseInt(document.getElementById('input-distance').value, 10) || 3000;
@@ -1796,7 +1934,7 @@
                 return `
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 mb-0.5">${d}m</label>
-                        <input type="number" data-dist="${d}" min="80" max="225" required value="${val}"
+                        <input type="number" data-dist="${d}" min="80" max="225" value="${val}"
                             class="split-hr-input w-full px-2 py-1.5 text-xs font-bold text-slate-800 rounded-lg border border-slate-200 bg-white">
                     </div>
                 `;
@@ -1815,17 +1953,12 @@
         function handleWatchFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const xmlText = e.target.result;
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(xmlText, 'text/xml');
-
+                    const xml = new DOMParser().parseFromString(e.target.result, 'text/xml');
                     let totalDist = 0;
                     const samples = [];
-
                     const trkpts = xml.getElementsByTagName('trkpt');
                     if (trkpts.length > 1) {
                         let prevLat = null, prevLon = null;
@@ -1833,15 +1966,10 @@
                             const pt = trkpts[i];
                             const lat = parseFloat(pt.getAttribute('lat'));
                             const lon = parseFloat(pt.getAttribute('lon'));
-                            if (prevLat !== null && !isNaN(lat) && !isNaN(lon)) {
-                                totalDist += haversineMeters(prevLat, prevLon, lat, lon);
-                            }
+                            if (prevLat !== null && !isNaN(lat) && !isNaN(lon)) totalDist += haversineMeters(prevLat, prevLon, lat, lon);
                             prevLat = lat; prevLon = lon;
-
                             const hrNode = pt.querySelector('hr, gpxtpx\\:hr, ns3\\:hr') || pt.getElementsByTagNameNS('*', 'hr')[0];
-                            if (hrNode && !isNaN(parseInt(hrNode.textContent, 10))) {
-                                samples.push({ cumDist: totalDist, hr: parseInt(hrNode.textContent, 10) });
-                            }
+                            if (hrNode && !isNaN(parseInt(hrNode.textContent, 10))) samples.push({ cumDist: totalDist, hr: parseInt(hrNode.textContent, 10) });
                         }
                     } else {
                         const tpts = xml.getElementsByTagName('Trackpoint');
@@ -1850,20 +1978,13 @@
                             const distNode = tp.getElementsByTagName('DistanceMeters')[0];
                             const hrValNode = tp.querySelector('HeartRateBpm Value') || tp.getElementsByTagName('Value')[0];
                             if (distNode) totalDist = Math.max(totalDist, parseFloat(distNode.textContent) || 0);
-                            if (hrValNode) {
-                                samples.push({ cumDist: totalDist, hr: parseInt(hrValNode.textContent, 10) });
-                            }
+                            if (hrValNode) samples.push({ cumDist: totalDist, hr: parseInt(hrValNode.textContent, 10) });
                         }
                     }
-
-                    if (totalDist < 100) {
-                        showToast('파일에서 유효한 GPS 거리 데이터를 찾지 못했습니다.', 'error');
-                        return;
-                    }
+                    if (totalDist < 100) { showToast('파일에서 유효한 GPS 거리 데이터를 찾지 못했습니다.', 'error'); return; }
 
                     const roundedDist = Math.round(totalDist / 10) * 10;
                     document.getElementById('input-distance').value = roundedDist;
-
                     const checkpoints = [];
                     for (let d = 400; d < roundedDist; d += 400) checkpoints.push(d);
                     if (checkpoints[checkpoints.length - 1] !== roundedDist) checkpoints.push(roundedDist);
@@ -1873,17 +1994,12 @@
                         presetHrs = checkpoints.map((cp, idx) => {
                             const prevCp = idx === 0 ? 0 : checkpoints[idx - 1];
                             const bucket = samples.filter(s => s.cumDist > prevCp && s.cumDist <= cp);
-                            if (bucket.length > 0) {
-                                return Math.round(bucket.reduce((a, b) => a + b.hr, 0) / bucket.length);
-                            }
-                            return samples[samples.length - 1].hr;
+                            return bucket.length > 0 ? Math.round(bucket.reduce((a, b) => a + b.hr, 0) / bucket.length) : samples[samples.length - 1].hr;
                         });
                     }
-
                     renderSplitInputs(presetHrs);
                     showToast(`파일 파싱 완료! 총 ${roundedDist.toLocaleString()}m 및 구간 심박수를 적용했습니다.`, 'success');
                 } catch (err) {
-                    console.error(err);
                     showToast('GPX/TCX 파일 형식을 읽는 중 오류가 발생했습니다.', 'error');
                 }
             };
@@ -1892,29 +2008,22 @@
         }
 
         async function connectBluetoothHR() {
-            if (!navigator.bluetooth) {
-                showToast('현재 브라우저는 Web Bluetooth를 지원하지 않습니다. 데스크톱/안드로이드 Chrome에서 이용해 주세요.', 'error');
-                return;
-            }
+            if (!navigator.bluetooth) { showToast('현재 브라우저는 Web Bluetooth를 지원하지 않습니다.', 'error'); return; }
             try {
-                bleDevice = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: ['heart_rate'] }]
-                });
+                bleDevice = await navigator.bluetooth.requestDevice({ filters: [{ services: ['heart_rate'] }] });
                 const server = await bleDevice.gatt.connect();
                 const service = await server.getPrimaryService('heart_rate');
                 const char = await service.getCharacteristic('heart_rate_measurement');
                 await char.startNotifications();
-
                 document.getElementById('ble-status-box').classList.remove('hidden');
                 char.addEventListener('characteristicvaluechanged', (ev) => {
                     const val = ev.target.value;
                     const flags = val.getUint8(0);
-                    const hr = (flags & 0x01) ? val.getUint16(1, true) : val.getUint8(1);
-                    document.getElementById('ble-live-hr').textContent = hr;
+                    document.getElementById('ble-live-hr').textContent = (flags & 0x01) ? val.getUint16(1, true) : val.getUint8(1);
                 });
                 showToast(`${bleDevice.name || 'BLE 심박 기기'}에 연결되었습니다!`, 'success');
             } catch (err) {
-                showToast('블루투스 기기 연결이 취소되었거나 지원 기기를 찾지 못했습니다.', 'info');
+                showToast('블루투스 연결이 취소되었습니다.', 'info');
             }
         }
 
@@ -1939,15 +2048,13 @@
                 document.getElementById('input-name').value = names[Math.floor(Math.random() * names.length)];
                 baseDist = Math.round((Math.random() * 600 + 2800) / 10) * 10;
             }
-
             document.getElementById('input-distance').value = baseDist;
             const maxHR = calcMaxHR(getActiveFormAge());
             const count = Math.ceil(baseDist / 400);
             const preset = [];
             for (let i = 0; i < count; i++) {
                 const ratio = i / Math.max(1, count - 1);
-                const jitter = Math.floor(Math.random() * 5) - 2;
-                preset.push(Math.min(maxHR, Math.round(maxHR * (0.71 + ratio * 0.21) + jitter)));
+                preset.push(Math.min(maxHR, Math.round(maxHR * (0.71 + ratio * 0.21) + Math.floor(Math.random() * 5) - 2)));
             }
             renderSplitInputs(preset);
             showToast(`${deviceName} GPS(${baseDist}m) 및 구간 심박 데이터를 불러왔습니다!`, 'success');
@@ -1959,17 +2066,28 @@
             const device = document.getElementById('input-device').value;
             const date = document.getElementById('input-date').value || new Date().toISOString().split('T')[0];
 
-            const splits = Array.from(document.querySelectorAll('.split-hr-input')).map(inp => ({
-                dist: parseInt(inp.dataset.dist, 10),
-                hr: parseInt(inp.value, 10)
-            }));
+            if (isNaN(distance) || distance < 400 || distance > 5000) {
+                showToast('12분 GPS 거리를 400~5000m 사이로 입력해 주세요.', 'error');
+                document.getElementById('input-distance').focus();
+                return;
+            }
+
+            const maxHRForFallback = calcMaxHR(getActiveFormAge());
+            const splits = Array.from(document.querySelectorAll('.split-hr-input')).map(inp => {
+                const parsedHr = parseInt(inp.value, 10);
+                return {
+                    dist: parseInt(inp.dataset.dist, 10),
+                    hr: (!isNaN(parsedHr) && parsedHr >= 60 && parsedHr <= 230) ? parsedHr : Math.round(maxHRForFallback * 0.82)
+                };
+            });
+            if (splits.length === 0) splits.push(...makeSplits(distance, Math.round(maxHRForFallback * 0.72), Math.round(maxHRForFallback * 0.92)));
 
             const newRec = { id: 'r_' + Date.now(), date, distance, device, splits };
 
             if (recordTargetMode === 'existing') {
                 const pid = document.getElementById('input-existing-player').value;
                 const p = players.find(x => x.id === pid);
-                if (!p) return;
+                if (!p) { showToast('기록을 추가할 선수를 선택해 주세요.', 'error'); return; }
                 p.records.push(newRec);
                 selectedPlayerId = p.id;
                 showToast(`${p.name} 선수의 ${p.records.length}회차 기록이 누적 저장되었습니다.`, 'success');
@@ -1977,27 +2095,26 @@
                 const name = document.getElementById('input-name').value.trim();
                 const position = document.getElementById('input-position').value;
                 const age = parseInt(document.getElementById('input-age').value, 10);
-                if (!name) return;
+                const pin = document.getElementById('input-pin').value.trim() || '1234';
+
+                if (!name) { showToast('신규 선수의 이름을 입력해 주세요.', 'error'); document.getElementById('input-name').focus(); return; }
+                if (isNaN(age) || age < 10 || age > 70) { showToast('나이를 10~70세 사이로 입력해 주세요.', 'error'); return; }
+
                 const newPlayer = {
-                    id: 'p_' + Date.now(),
-                    name,
-                    position,
-                    age,
+                    id: 'p_' + Date.now(), name, position, age, pin,
                     watchSync: { connected: false, provider: 'Strava', device, lastSyncedAt: null },
                     records: [newRec]
                 };
                 players.push(newPlayer);
                 selectedPlayerId = newPlayer.id;
-                showToast(`${name} 선수가 등록되고 첫 기록이 저장되었습니다.`, 'success');
+                showToast(`${name} 선수가 등록되고 첫 기록이 저장되었습니다. (로그인 PIN: ${pin})`, 'success');
             }
 
-            saveData();
-            closeRecordModal();
-            renderAll();
+            saveData(); closeRecordModal(); renderAll();
         }
 
         // ---------------------------------------------------------
-        // 8-B. 원클릭 자동 동기화 (Strava 클라우드 허브 연동 흐름)
+        // 8-B. 원클릭 자동 동기화
         // ---------------------------------------------------------
         function formatNowTimestamp() {
             const now = new Date();
@@ -2030,12 +2147,9 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="syncSinglePlayerWatch('${player.id}')" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 text-white text-xs sm:text-sm font-bold shadow-sm hover:from-orange-600 hover:to-rose-600 active:scale-[0.98] transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             지금 바로 기록 불러오기
                         </button>
-                        <button onclick="disconnectPlayerWatch('${player.id}')" class="px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="워치 연동 해제">
-                            해제
-                        </button>
+                        <button onclick="disconnectPlayerWatch('${player.id}')" class="px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">해제</button>
                     </div>
                 `;
             } else {
@@ -2048,7 +2162,6 @@
                         </div>
                     </div>
                     <button onclick="openWatchConnectModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-bold hover:bg-slate-800 active:scale-[0.98] transition shadow-sm shrink-0">
-                        <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                         내 워치 1회 연결하기
                     </button>
                 `;
@@ -2061,12 +2174,10 @@
             const m = document.getElementById('watch-connect-modal');
             m.classList.remove('hidden'); m.classList.add('flex');
         }
-
         function closeWatchConnectModal() {
             const m = document.getElementById('watch-connect-modal');
             m.classList.add('hidden'); m.classList.remove('flex');
         }
-
         function selectConnectDevice(device) {
             pendingConnectDevice = device;
             const btnApple = document.getElementById('connect-opt-apple');
@@ -2083,34 +2194,27 @@
         function confirmWatchOAuthConnect() {
             const p = players.find(x => x.id === selectedPlayerId);
             if (!p) return;
-
             const btn = document.getElementById('btn-confirm-oauth');
             btn.disabled = true;
             btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span> <span>Strava 클라우드 인증 중...</span>`;
 
             setTimeout(() => {
                 const { timestamp } = formatNowTimestamp();
-                p.watchSync = {
-                    connected: true,
-                    provider: 'Strava',
-                    device: pendingConnectDevice,
-                    lastSyncedAt: timestamp
-                };
+                p.watchSync = { connected: true, provider: 'Strava', device: pendingConnectDevice, lastSyncedAt: timestamp };
                 saveData();
                 btn.disabled = false;
                 btn.innerHTML = `<span>Strava 계정으로 원클릭 연결 승인</span>`;
                 closeWatchConnectModal();
                 renderAll();
                 showToast(`${p.name} 선수의 ${pendingConnectDevice} 자동 연동이 완료되었습니다!`, 'success');
-            }, 700);
+            }, 650);
         }
 
         function disconnectPlayerWatch(playerId) {
             const p = players.find(x => x.id === playerId);
             if (!p) return;
             p.watchSync = { connected: false, provider: 'Strava', device: p.watchSync?.device || 'Apple Watch', lastSyncedAt: null };
-            saveData();
-            renderAll();
+            saveData(); renderAll();
             showToast(`${p.name} 선수의 워치 자동 연동을 해제했습니다.`, 'info');
         }
 
@@ -2121,7 +2225,6 @@
             const newDist = Math.max(1800, Math.min(4200, (lastRec ? lastRec.distance : 3000) + delta));
             const startHr = Math.round(maxHR * (0.71 + Math.random() * 0.03));
             const endHr = Math.min(maxHR, Math.round(maxHR * (0.91 + Math.random() * 0.04)));
-
             return {
                 id: 'r_sync_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
                 date: dateStr,
@@ -2135,81 +2238,59 @@
             if (isSyncing) return;
             const p = players.find(x => x.id === playerId);
             if (!p || !p.watchSync || !p.watchSync.connected) return;
-
             isSyncing = true;
             showToast(`${p.watchSync.device} 최신 쿠퍼 테스트 기록을 불러오는 중...`, 'info');
-
             setTimeout(() => {
                 const { date, timestamp } = formatNowTimestamp();
                 const newRec = buildSyncedRecordForPlayer(p, date);
                 p.records.push(newRec);
                 p.watchSync.lastSyncedAt = timestamp;
-                saveData();
-                isSyncing = false;
-                renderAll();
+                saveData(); isSyncing = false; renderAll();
                 showToast(`동기화 완료! ${p.name} 선수의 새 기록(${newRec.distance.toLocaleString()}m)이 반영되었습니다.`, 'success');
-            }, 800);
+            }, 750);
         }
 
         function syncTeamAllWatches() {
             if (isSyncing) return;
             const connectedPlayers = players.filter(p => p.watchSync && p.watchSync.connected);
-            if (connectedPlayers.length === 0) {
-                showToast('자동 연동된 선수가 없습니다. 선수 개인 화면에서 워치를 먼저 연결해 주세요.', 'error');
-                return;
-            }
-
+            if (connectedPlayers.length === 0) { showToast('자동 연동된 선수가 없습니다.', 'error'); return; }
             isSyncing = true;
             const icon = document.getElementById('team-sync-icon');
             const label = document.getElementById('team-sync-label');
             if (icon) icon.classList.add('animate-spin');
             if (label) label.textContent = '워치 기록 일괄 동기화 중...';
-
             setTimeout(() => {
                 const { date, timestamp } = formatNowTimestamp();
                 connectedPlayers.forEach(p => {
-                    const newRec = buildSyncedRecordForPlayer(p, date);
-                    p.records.push(newRec);
+                    p.records.push(buildSyncedRecordForPlayer(p, date));
                     p.watchSync.lastSyncedAt = timestamp;
                 });
-
-                saveData();
-                isSyncing = false;
+                saveData(); isSyncing = false;
                 if (icon) icon.classList.remove('animate-spin');
                 renderAll();
-                showToast(`원클릭 동기화 완료! 연동된 ${connectedPlayers.length}명의 최신 워치 기록이 누적되었습니다.`, 'success');
-            }, 950);
+                showToast(`원클릭 동기화 완료! ${connectedPlayers.length}명의 최신 기록이 누적되었습니다.`, 'success');
+            }, 900);
         }
 
         // ---------------------------------------------------------
-        // 9. 워치 가이드 모달, CSV 내보내기, 토스트
+        // 9. 모달/CSV/토스트/초기 실행
         // ---------------------------------------------------------
-        function openWatchGuideModal() {
-            const m = document.getElementById('watch-guide-modal');
-            m.classList.remove('hidden'); m.classList.add('flex');
-        }
-        function closeWatchGuideModal() {
-            const m = document.getElementById('watch-guide-modal');
-            m.classList.add('hidden'); m.classList.remove('flex');
-        }
+        function openWatchGuideModal() { const m = document.getElementById('watch-guide-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+        function closeWatchGuideModal() { const m = document.getElementById('watch-guide-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
         function exportCSV() {
             const list = getEnrichedPlayers();
             const headers = ['순위', '이름', '포지션', '나이', '측정횟수', '최근거리(m)', '누적평균거리(m)', '최고기록(m)', '직전대비변화(m)', '최대심박(220-나이)', '누적평균%HRmax', '최근측정일'];
             const rows = list.map(p => [
-                p.rank, p.name, p.position, p.age, p.count, p.latest.distance, p.avgDistAll, p.bestDist,
-                p.count >= 2 ? p.deltaDist : 0, p.maxHR, `${p.avgHrPctAll}%`, p.latest.date
+                p.rank, p.name, p.position, p.age, p.count, p.latest ? p.latest.distance : 0, p.avgDistAll, p.bestDist,
+                p.count >= 2 ? p.deltaDist : 0, p.maxHR, `${p.avgHrPctAll}%`, p.latest ? p.latest.date : '-'
             ]);
             const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `cooper_pro_longitudinal_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            a.href = url; a.download = `cooper_pro_longitudinal_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
             showToast('누적 평균 및 성장 추이 리포트(CSV)를 다운로드했습니다.', 'success');
         }
 
@@ -2236,7 +2317,14 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             loadData();
-            switchRole('manager');
+            currentUser = loadAuthSession();
+            if (currentUser) {
+                enterApp();
+            } else {
+                document.getElementById('view-auth').classList.remove('hidden');
+                document.getElementById('app-shell').classList.add('hidden');
+                switchAuthTab('player');
+            }
         });
     </script>
 </body>
